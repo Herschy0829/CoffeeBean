@@ -302,3 +302,4 @@ ModuleManager.Uninstall("com.coffeebean.events")
 | 仓库布局 | **框架根仓库（本目录）+ 独立 Core 模块仓库** |
 | 首期范围 | **Core + events 一个验证模块** |
 | GitHub 账号 | **个人账号**（暂不建组织，URL 以 `Herschy0829` 占位） |
+| 仓库可见性 | **后续新建的模块仓库默认公开（public）**；现有 4 个仓库（根/Core/events/purchase）保持私有，需转公开时单独处理 |
