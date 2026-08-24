@@ -24,6 +24,7 @@ CoffeeBean/                      # 框架根仓库（本仓库）
 |------|------|----------|
 | `com.coffeebean.core` | 模块管理 / 引导 / 服务注册 | `https://github.com/Herschy0829/com.coffeebean.core.git#v0.1.0` |
 | `com.coffeebean.events` | 类型安全事件总线 | `https://github.com/Herschy0829/com.coffeebean.events.git#v0.1.0` |
+| `com.coffeebean.purchase` | 内购（Unity IAP 5.4，Excel 配置，可选服务器核销） | `https://github.com/Herschy0829/com.coffeebean.purchase.git#v0.1.0` |
 
 ## 快速开始（游戏工程侧）
 
