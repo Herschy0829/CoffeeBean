@@ -1,0 +1,19 @@
+{
+  "name": "CoffeeBean.Template.Editor",
+  "rootNamespace": "CoffeeBean.Template.Editor",
+  "references": [
+    "CoffeeBean.Template",
+    "CoffeeBean.Core"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

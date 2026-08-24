@@ -1,0 +1,7 @@
+<linker>
+  <!--
+    保留模块程序集，确保 [assembly: CoffeeBeanModule] 特性在构建（IL2CPP / 代码裁剪）后仍可被发现。
+    程序集名以你的模块 asmdef 为准，例如 CoffeeBean.Template。
+  -->
+  <assembly fullname="CoffeeBean.Template" preserve="all"/>
+</linker>

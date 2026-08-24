@@ -1,0 +1,15 @@
+{
+  "name": "com.coffeebean.template",
+  "version": "0.1.0",
+  "displayName": "CoffeeBean Template",
+  "description": "TODO: describe this module.",
+  "unity": "6000.0",
+  "author": {
+    "name": "Herschy0829"
+  },
+  "keywords": ["coffeebean"],
+  "dependencies": {
+    "com.coffeebean.core": "0.1.0"
+  },
+  "testables": ["com.coffeebean.template"]
+}
