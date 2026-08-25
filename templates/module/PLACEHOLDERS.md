@@ -27,6 +27,7 @@
 | `Runtime/` | 运行时程序集（必选），含 `ModuleMarker.cs` |
 | `Editor/` | 编辑器程序集（可选），不需要可删除并同步 `package.json` 无影响 |
 | `Tests/` | EditMode 测试（可选）。测试 asmdef 用官方格式 `optionalUnityReferences: ["TestAssemblies"]`；包在项目 `Packages` 目录外时，还需在**消费工程的 manifest** 的 `testables` 里列出本包（见根仓库 `dev/Packages/manifest.json` 示例） |
+| `Samples~/` | **示例（必选）**：见 `Samples~/TemplateDemo/` 骨架，改造成你的模块真实演示；`package.json` 的 `samples` 字段同步 |
 
 ## 5. 接入框架
 

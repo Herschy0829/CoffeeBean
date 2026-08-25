@@ -104,9 +104,12 @@ com.coffeebean.events/
 │   ├── CoffeeBean.Events.asmdef
 │   └── ...
 ├── Editor/                 # 编辑器程序集（可选）
-├── Tests/                  # 测试（可选，Editor/PlayMode 各一套）
-└── Samples~/               # 示例（可选）
+├── Tests/                  # 测试（推荐，Editor/PlayMode 各一套）
+└── Samples~/               # 示例（必选，随模块发布；模块更新时同步维护）
 ```
+
+> 约定：**每个模块必须有 `Samples~/` 示例**（package.json 的 `samples` 字段登记，Package Manager 可一键导入）；
+> 模块功能更新时，示例必须同步更新，没有示例的模块需要补上（见 `templates/module/Samples~/` 骨架）。
 
 ### 4.3 package.json 示例（目标 Unity 6）
 ```json
@@ -225,7 +228,8 @@ ModuleManager.Uninstall("com.coffeebean.events")
 
 ### 6.4 引导流程（运行期）
 ```
-入口场景放置 CoffeeBeanBootstrapper（组件或静态入口）
+入口场景放置 CoffeeBeanBootstrap（组件或静态入口；组件自带 DontDestroyOnLoad 跨场景常驻 + 单例保护，
+Loading → Main 场景切换不会销毁框架，上下文全程存活）
   → Bootstrapper.Load()
   → 扫描 [CoffeeBeanModule] 程序集 → 按 CoffeeBeanConfig 过滤 → 构建模块图
   → 拓扑排序 + 环检测（依赖在前）
@@ -265,7 +269,7 @@ ModuleManager.Uninstall("com.coffeebean.events")
 1. 新建 Unity 工程（**Unity 6 / 6000.x**）
 2. `manifest.json` 添加：`"com.coffeebean.core": "https://github.com/Herschy0829/com.coffeebean.core.git#v1.0.0"`
 3. 其余模块：手动添加 git URL，或打开 `Module Manager` 一键安装
-4. 入口场景放 `CoffeeBeanBootstrapper` → 框架启动
+4. 入口场景放 `CoffeeBeanBootstrap`（组件跨场景常驻）→ 框架启动
 5. 多仓库联调开发：用 `file:` 本地路径引用 `packages/` 里的 checkout
 
 ---

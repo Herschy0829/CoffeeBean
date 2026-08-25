@@ -11,5 +11,12 @@
   "dependencies": {
     "com.coffeebean.core": "0.1.0"
   },
-  "testables": ["com.coffeebean.template"]
+  "testables": ["com.coffeebean.template"],
+  "samples": [
+    {
+      "displayName": "Template Demo",
+      "description": "模块示例（必选）：演示本模块的核心用法。",
+      "path": "Samples~/TemplateDemo"
+    }
+  ]
 }
