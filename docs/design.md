@@ -91,6 +91,7 @@ CoffeeBean/                          # 框架根仓库（git）
 | 目录名 | 与包名一致（UPM 约定） | `com.coffeebean.events/` |
 | Runtime 程序集 | `CoffeeBean.<Module>` | `CoffeeBean.Events.asmdef` |
 | Editor 程序集 | `CoffeeBean.<Module>.Editor` | `CoffeeBean.Events.Editor.asmdef` |
+| 框架自有类型 | **`C` 前缀**（CoffeeBean 专属，与业务/第三方类型区分） | `CSingleton<T>`、`CSingletonMono<T>`、`C` 后续命名沿用 |
 
 ### 4.2 目录结构（模板，见 `templates/module/`）
 ```
@@ -247,7 +248,12 @@ Loading → Main 场景切换不会销毁框架，上下文全程存活）
 | 包 | 功能 | 依赖 | 状态 |
 |----|------|------|------|
 | `com.coffeebean.core` | 模块管理 / 引导 / 服务注册 | 无 | 本期实施 |
-| `com.coffeebean.events` | 类型安全事件总线（验证跨仓库 git 引用全流程） | core | 本期实施 |
+| `com.coffeebean.events` | 事件系统（EventBus 轻量 + EventCenter 受管） | core | 本期实施 |
+| `com.coffeebean.purchase` | 内购（Unity IAP 5.4，Excel 配置，可选服务器核销） | 无（独立） | 本期实施 |
+| `com.coffeebean.tools` | **工具模块**：单例 / 主线程调度 / 线程池 | 无（独立） | 本期实施 |
+
+> **工具模块规则**：`com.coffeebean.tools` 不依赖任何模块，供其他模块依赖；
+> 其他模块"出于纯净度不适合放在模块内"的通用/零碎工具，拆分到工具模块后依赖它。
 
 **后续规划（按需逐个建）**
 | 包 | 功能 | 依赖 |
