@@ -161,7 +161,8 @@ public interface ICoffeeBeanModule
 - SemVer：`MAJOR.MINOR.PATCH`，git tag 命名 `v1.0.0`
 - **MAJOR 不一致 = 不兼容**（Module Manager 阻止静默升级，需显式确认）
 - Core 的 MAJOR 升级 = 框架整体 breaking（所有模块需跟进）
-- 每个模块声明所需 Core 最低版本，运行时校验，不满足则 fail-fast 并给出明确日志
+- 每个模块声明所需 Core 最低版本（`MinCoreVersion`），运行时校验：当前 Core 不满足时该模块
+  **fail-fast（不加载）** 并输出明确错误日志，其余模块正常引导（v0.1.11 实现，比较逻辑见 `CoffeeBeanVersion`）
 - CHANGELOG 强制维护
 
 ---
