@@ -22,10 +22,10 @@ CoffeeBean/                      # 框架根仓库（本仓库）
 
 | 模块 | 功能 | Git 引用 |
 |------|------|----------|
-| `com.coffeebean.core` | 模块管理 / 引导 / 服务注册 | `https://github.com/Herschy0829/com.coffeebean.core.git#v0.1.7` |
-| `com.coffeebean.events` | 事件系统（EventBus 轻量 + EventCenter 受管） | `https://github.com/Herschy0829/com.coffeebean.events.git#v0.2.0` |
-| `com.coffeebean.purchase` | 内购（Unity IAP 5.4，Excel 配置，可选服务器核销） | `https://github.com/Herschy0829/com.coffeebean.purchase.git#v0.1.4` |
-| `com.coffeebean.tools` | 工具模块（单例 / 主线程调度 / 线程池，独立无依赖） | `https://github.com/Herschy0829/com.coffeebean.tools.git#v0.1.0` |
+| `com.coffeebean.core` | 模块管理 / 引导 / 服务注册 | `https://github.com/Herschy0829/com.coffeebean.core.git#v0.1.11` |
+| `com.coffeebean.events` | 事件系统（EventBus 轻量 + EventCenter 受管） | `https://github.com/Herschy0829/com.coffeebean.events.git#v0.2.1` |
+| `com.coffeebean.purchase` | 内购（Unity IAP 5.4，Excel 配置，可选服务器核销） | `https://github.com/Herschy0829/com.coffeebean.purchase.git#v0.1.5` |
+| `com.coffeebean.tools` | 工具模块（单例 / 主线程调度 / 线程池，独立无依赖） | `https://github.com/Herschy0829/com.coffeebean.tools.git#v0.4.1` |
 
 ## 快速开始（游戏工程侧）
 
@@ -35,7 +35,7 @@ CoffeeBean/                      # 框架根仓库（本仓库）
    ```json
    {
      "dependencies": {
-       "com.coffeebean.core": "https://github.com/Herschy0829/com.coffeebean.core.git#v0.1.0"
+       "com.coffeebean.core": "https://github.com/Herschy0829/com.coffeebean.core.git#v0.1.11"
      }
    }
    ```
