@@ -258,6 +258,7 @@ Loading → Main 场景切换不会销毁框架，上下文全程存活）
 **后续规划（按需逐个建）**
 | 包 | 功能 | 依赖 |
 |----|------|------|
+| `com.coffeebean.net` | 网络（HTTP + TCP + WebSocket，自定义协议可插拔编解码） | tools |
 | `com.coffeebean.di` | 依赖注入容器 | core |
 | `com.coffeebean.pooling` | 对象池 | core |
 | `com.coffeebean.fsm` | 状态机 | core |
