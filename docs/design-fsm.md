@@ -46,9 +46,15 @@ public interface IState
 - `CStateMachine<T>.CurrentStateId` / `CurrentState` / `IsInState(id)`
 - `Clear()`：清空注册（重置状态机）
 
-### 2.4 v1 不做（文档注明，后续版本）
+### 2.4 正交状态（并行维度）的处理（v1 决策）
+- **v1 不内置正交状态 / HSM**：正交语义（同时处于多个互不相关的子状态）用**多个状态机实例**实现——
+  每个正交维度一个 `CStateMachine<T>`，各自注册、切换、驱动（见 README"正交状态"章节与 FsmDemo 并行演示）
+- 不推荐 `[Flags]` 组合状态 ID（状态数指数爆炸）
+- 如确需内置并行区域（`CParallelState`：OnEnter 并行进入各子状态、OnUpdate 并行驱动），属 HSM 范畴，v0.2 按需设计
+
+### 2.5 v1 不做（文档注明，后续版本）
 - **Transition 表**（声明式条件转移）：v1 用显式 `ChangeState`（业务逻辑驱动切换，更直观、易调试）
-- **层次状态机（HSM）** / **状态栈回退（Push/Pop）**：复杂度高，按需后续
+- **层次状态机（HSM）** / **状态栈回退（Push/Pop）** / **并行区域（正交状态内置支持）**：复杂度高，按需后续
 - 依赖 events 模块的状态切换广播：自带 `OnStateChanged` 事件即可（需要事件总线时业务自行转发）
 
 ## 3. 命名与目录结构（C 前缀 + 类别分组）
