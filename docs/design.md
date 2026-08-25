@@ -275,7 +275,7 @@ ModuleManager.Uninstall("com.coffeebean.events")
 - **开发**：在根仓库 `packages/` 下 clone 各模块仓库，`dev/` Unity 工程用 `file:` 引用本地模块
 - **包测试**：包在项目 `Packages` 目录外开发时，必须在**项目 manifest** 的 `testables` 里列出要启用测试的包（仅写包内 package.json 的 `testables` 无效）；测试 asmdef 用官方格式 `optionalUnityReferences: ["TestAssemblies"]`
 - **CI**：每个模块仓库配 Unity Test Runner（EditMode + PlayMode），`on tag push` 触发
-- **发布**：打 tag = 发布；`latest` 从最新 tag 读取；CHANGELOG 同步
+- **发布**：打 tag = 发布；`latest` 从最新 tag 读取；CHANGELOG 同步；**每次发布必须在 GitHub 对应仓库创建 Release 并写更新说明**（正文取自 CHANGELOG 当版本条目，tag 对应 `vX.Y.Z`）
 - **依赖升级**：模块升级 MAJOR 时，Module Manager 在消费工程里提示所有依赖方
 
 ---
