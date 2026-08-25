@@ -22,9 +22,10 @@ CoffeeBean/                      # 框架根仓库（本仓库）
 
 | 模块 | 功能 | Git 引用 |
 |------|------|----------|
-| `com.coffeebean.core` | 模块管理 / 引导 / 服务注册 | `https://github.com/Herschy0829/com.coffeebean.core.git#v0.1.12` |
+| `com.coffeebean.core` | 模块管理 / 引导 / 服务注册 | `https://github.com/Herschy0829/com.coffeebean.core.git#v0.1.13` |
 | `com.coffeebean.events` | 事件系统（EventBus 轻量 + EventCenter 受管） | `https://github.com/Herschy0829/com.coffeebean.events.git#v0.2.1` |
 | `com.coffeebean.net` | 网络（HTTP / TCP / WebSocket，帧协议 + 可插拔编解码，依赖 tools） | `https://github.com/Herschy0829/com.coffeebean.net.git#v0.1.0` |
+| `com.coffeebean.pooling` | 对象池（CPool 纯 C# 泛型池 + CGameObjectPool Prefab 池，独立无依赖） | `https://github.com/Herschy0829/com.coffeebean.pooling.git#v0.1.0` |
 | `com.coffeebean.purchase` | 内购（Unity IAP 5.4，Excel 配置，可选服务器核销） | `https://github.com/Herschy0829/com.coffeebean.purchase.git#v0.1.5` |
 | `com.coffeebean.tools` | 工具模块（单例 / 主线程调度 / 线程池，独立无依赖） | `https://github.com/Herschy0829/com.coffeebean.tools.git#v0.4.1` |
 
