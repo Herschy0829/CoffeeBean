@@ -1,7 +1,7 @@
 # CoffeeBean UI 模块设计（com.coffeebean.ui）
 
-> 版本：v0.1（草案，待确认）
-> 状态：待实施
+> 版本：v0.1
+> 状态：已实施（com.coffeebean.ui v0.1.0，2026-08-28 发布）
 > 参考：QFramework UIKit + CodeGenKit（MIT），已精读源码吸收设计
 
 ---
