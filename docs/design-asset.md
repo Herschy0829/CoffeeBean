@@ -1,7 +1,7 @@
 # CoffeeBean 资源管理模块设计（com.coffeebean.asset）
 
-> 版本：v0.1（草案，待确认）
-> 状态：待实施
+> 版本：v0.1
+> 状态：已实施（com.coffeebean.asset v0.1.0，2026-08-28 发布；后端 Addressables，可插拔 IAssetBackend）
 
 ---
 
