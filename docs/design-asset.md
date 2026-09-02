@@ -185,10 +185,14 @@ EditMode 测试（核心逻辑，Addressables 初始化为本地 catalog）：
 ## 5. 版本规划
 
 - **v0.1.0**：CAssetSystem + CAssetOptions + CAssetExtensions（加载/释放/统计核心）+ CCatalogUpdater + AssetDemo + 测试
-- **v0.2.0（候选）**：自定义 AssetBundleProvider 加密、Editor 依赖分析、Pin/Unpin 常驻资源、组件自动释放钩子
+- **v0.2.x（已实施）**：Pin/Unpin 常驻资源（0.2.0）、组件自动释放钩子 CAutoRelease（0.2.1）、资源依赖分析工具（0.2.2）
 
 ## 6. 依赖与风险
 
 - **依赖**：`com.unity.addressables`（版本消费工程定，建议 2.9+）；测试/Sample 用 dev 工程内建的测试 group
 - **风险**：Addressables EditMode 测试需初始化 catalog（本地模式，无网络）；同步加载在真机仍会阻塞（文档明示推荐异步）
+- **AB 加密取舍（v0.2 不实施，明示）**：Addressables 资源加密需自定义 AssetBundleProvider / `IDataConverter` 构建期转换 +
+  运行时解密加载管线，涉及构建管线集成且测试难覆盖，对中小项目收益有限（混淆级保护，key 仍在客户端）。
+  已落地的替代：配置 JSON（excel 模块）走字节级 XOR 加密；如需 AB 加密，建议项目按
+  [官方自定义 Provider 方案](https://docs.unity3d.com/Packages/com.unity.addressables@2.9/api/UnityEngine.ResourceManagement.ResourceProviders.IDataConverter.html) 在项目层扩展，模块不内置。
 - **测试环境**：dev 工程 manifest 增加 `com.unity.addressables`（registry 解析），新增测试资源目录（`Assets/AssetTest/` + AddressableAssetSettings 配置）

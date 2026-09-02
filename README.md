@@ -22,7 +22,7 @@ CoffeeBean/                      # 框架根仓库（本仓库）
 
 | 模块 | 功能 | Git 引用 |
 |------|------|----------|
-| `com.coffeebean.asset` | 资源（Addressables 封装：加载/实例化/预加载/标签/引用计数释放 + Pin 常驻资源 + 组件绑定 + 更新下载，可插拔后端，依赖 tools + addressables） | `https://github.com/Herschy0829/com.coffeebean.asset.git#v0.2.0` |
+| `com.coffeebean.asset` | 资源（Addressables 封装：加载/实例化/预加载/标签/引用计数释放 + Pin 常驻 + 自动释放钩子 + 依赖分析 + 组件绑定 + 更新下载，可插拔后端，依赖 tools + addressables） | `https://github.com/Herschy0829/com.coffeebean.asset.git#v0.2.0` |
 | `com.coffeebean.core` | 模块管理 / 引导 / 服务注册（Window/CoffeeBean 工具中心，含 COFFEEBEAN_CORE 宏安装） | `https://github.com/Herschy0829/com.coffeebean.core.git#v0.1.36` |
 | `com.coffeebean.debug` | 调试（游戏内控制台：日志捕获/过滤/搜索 + 作弊命令系统 + Core 生命周期集成，依赖 tools） | `https://github.com/Herschy0829/com.coffeebean.debug.git#v0.1.1` |
 | `com.coffeebean.di` | 依赖注入（容器：构造/字段注入、单例/瞬时/作用域、子作用域，零依赖） | `https://github.com/Herschy0829/com.coffeebean.di.git#v0.1.0` |
@@ -45,12 +45,12 @@ CoffeeBean/                      # 框架根仓库（本仓库）
    ```json
    {
      "dependencies": {
-       "com.coffeebean.core": "https://github.com/Herschy0829/com.coffeebean.core.git#v0.1.21"
+       "com.coffeebean.core": "https://github.com/Herschy0829/com.coffeebean.core.git#v0.1.37"
      }
    }
    ```
 
-3. 等待 UPM 解析完成后，打开 `Window > CoffeeBean > Module Manager` 一键安装其他模块
+3. 等待 UPM 解析完成后，打开 `Window > CoffeeBean`（工具中心）一键安装其他模块
 4. 入口场景创建一个空物体，挂上 `CoffeeBeanBootstrap` 组件 → 框架自动引导
 
 ## 命名空间（统一 using）
