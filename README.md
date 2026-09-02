@@ -23,7 +23,8 @@ CoffeeBean/                      # 框架根仓库（本仓库）
 | 模块 | 功能 | Git 引用 |
 |------|------|----------|
 | `com.coffeebean.asset` | 资源（Addressables 封装：加载/实例化/预加载/标签/引用计数释放 + 组件绑定 + 更新下载，可插拔后端，依赖 tools + addressables） | `https://github.com/Herschy0829/com.coffeebean.asset.git#v0.1.2` |
-| `com.coffeebean.core` | 模块管理 / 引导 / 服务注册（Window/CoffeeBean 工具中心） | `https://github.com/Herschy0829/com.coffeebean.core.git#v0.1.31` |
+| `com.coffeebean.core` | 模块管理 / 引导 / 服务注册（Window/CoffeeBean 工具中心） | `https://github.com/Herschy0829/com.coffeebean.core.git#v0.1.32` |
+| `com.coffeebean.debug` | 调试（游戏内控制台：日志捕获/过滤/搜索 + 作弊命令系统，依赖 tools） | `https://github.com/Herschy0829/com.coffeebean.debug.git#v0.1.0` |
 | `com.coffeebean.events` | 事件系统（EventBus 轻量 + EventCenter 受管） | `https://github.com/Herschy0829/com.coffeebean.events.git#v0.3.0` |
 | `com.coffeebean.excel` | Excel 配置表工具链（Editor-only：多 Sheet/分章节/增量批量/加密 JSON 运行时加载/生成代码独立 asmdef + CoffeeBean 统一命名空间） | `https://github.com/Herschy0829/com.coffeebean.excel.git#v0.2.3` |
 | `com.coffeebean.fsm` | 状态机（泛型 CStateMachine + 全局状态，独立无依赖） | `https://github.com/Herschy0829/com.coffeebean.fsm.git#v0.2.0` |
