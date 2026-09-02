@@ -23,8 +23,8 @@ CoffeeBean/                      # 框架根仓库（本仓库）
 | 模块 | 功能 | Git 引用 |
 |------|------|----------|
 | `com.coffeebean.asset` | 资源（Addressables 封装：加载/实例化/预加载/标签/引用计数释放 + Pin 常驻资源 + 组件绑定 + 更新下载，可插拔后端，依赖 tools + addressables） | `https://github.com/Herschy0829/com.coffeebean.asset.git#v0.2.0` |
-| `com.coffeebean.core` | 模块管理 / 引导 / 服务注册（Window/CoffeeBean 工具中心） | `https://github.com/Herschy0829/com.coffeebean.core.git#v0.1.35` |
-| `com.coffeebean.debug` | 调试（游戏内控制台：日志捕获/过滤/搜索 + 作弊命令系统，依赖 tools） | `https://github.com/Herschy0829/com.coffeebean.debug.git#v0.1.0` |
+| `com.coffeebean.core` | 模块管理 / 引导 / 服务注册（Window/CoffeeBean 工具中心，含 COFFEEBEAN_CORE 宏安装） | `https://github.com/Herschy0829/com.coffeebean.core.git#v0.1.36` |
+| `com.coffeebean.debug` | 调试（游戏内控制台：日志捕获/过滤/搜索 + 作弊命令系统 + Core 生命周期集成，依赖 tools） | `https://github.com/Herschy0829/com.coffeebean.debug.git#v0.1.1` |
 | `com.coffeebean.di` | 依赖注入（容器：构造/字段注入、单例/瞬时/作用域、子作用域，零依赖） | `https://github.com/Herschy0829/com.coffeebean.di.git#v0.1.0` |
 | `com.coffeebean.events` | 事件系统（EventBus 轻量 + EventCenter 受管） | `https://github.com/Herschy0829/com.coffeebean.events.git#v0.3.0` |
 | `com.coffeebean.excel` | Excel 配置表工具链（Editor-only：多 Sheet/分章节/增量批量/加密 JSON 运行时加载/生成代码独立 asmdef + CoffeeBean 统一命名空间） | `https://github.com/Herschy0829/com.coffeebean.excel.git#v0.2.3` |
@@ -35,7 +35,7 @@ CoffeeBean/                      # 框架根仓库（本仓库）
 | `com.coffeebean.purchase` | 内购（Unity IAP 5.4，Excel 配置经 excel 模块，可选服务器核销） | `https://github.com/Herschy0829/com.coffeebean.purchase.git#v0.2.1` |
 | `com.coffeebean.save` | 存档（MemoryPack 序列化 + AES 加密，原子写 / 损坏回退 / 自动档节流 / 版本迁移，依赖 tools + memorypack） | `https://github.com/Herschy0829/com.coffeebean.save.git#v0.1.0` |
 | `com.coffeebean.tools` | 工具模块（单例 / 主线程调度 / 线程池，独立无依赖） | `https://github.com/Herschy0829/com.coffeebean.tools.git#v0.5.0` |
-| `com.coffeebean.ui` | UI（UGUI 面板管理：CUIManager/CUIPanel/6 层级/栈导航/可插拔加载器 + 面板转场动画 + CBind 代码生成，依赖 tools + asset） | `https://github.com/Herschy0829/com.coffeebean.ui.git#v0.2.1` |
+| `com.coffeebean.ui` | UI（UGUI 面板管理：CUIManager/CUIPanel/6 层级/栈导航/遮罩/可插拔加载器 + 面板转场动画 + CBind 代码生成，依赖 tools + asset） | `https://github.com/Herschy0829/com.coffeebean.ui.git#v0.2.2` |
 
 ## 快速开始（游戏工程侧）
 
