@@ -24,8 +24,8 @@ CoffeeBean/                      # 框架根仓库（本仓库）
 |------|------|----------|
 | `com.coffeebean.ad` | 广告（统一框架：激励/插屏(可选)/生命周期/可插拔后端/打点联动，依赖 tools + telemetry） | `https://github.com/Herschy0829/com.coffeebean.ad.git#v0.1.1` |
 | `com.coffeebean.asset` | 资源（Addressables 封装：加载/实例化/预加载/标签/引用计数释放 + Pin 常驻 + 自动释放钩子 + 依赖分析 + 组件绑定 + 更新下载，可插拔后端，依赖 tools + addressables） | `https://github.com/Herschy0829/com.coffeebean.asset.git#v0.2.2` |
-| `com.coffeebean.build` | 原生导出定制（Android Studio / Xcode 工程导出后处理：AndroidManifest/gradle/properties/libs/res/环境注入 + iOS plist/framework/BuildSettings/Capability，幂等 + dry-run，依赖 tools） | `https://github.com/Herschy0829/com.coffeebean.build.git#v0.1.0` |
-| `com.coffeebean.core` | 模块管理 / 引导 / 服务注册（Window/CoffeeBean 工具中心，含 COFFEEBEAN_CORE 宏安装） | `https://github.com/Herschy0829/com.coffeebean.core.git#v0.1.40` |
+| `com.coffeebean.build` | 原生导出定制（Android Studio / Xcode 工程导出后处理：AndroidManifest/gradle/properties/libs/res/环境注入 + iOS plist/framework/BuildSettings/Capability + Google Play 150MB AAB 分包(PAD asset packs)，幂等 + dry-run，依赖 tools） | `https://github.com/Herschy0829/com.coffeebean.build.git#v0.1.1` |
+| `com.coffeebean.core` | 模块管理 / 引导 / 服务注册（Window/CoffeeBean 工具中心，含 COFFEEBEAN_CORE 宏安装） | `https://github.com/Herschy0829/com.coffeebean.core.git#v0.1.41` |
 | `com.coffeebean.debug` | 调试（游戏内控制台：日志捕获/过滤/搜索 + 作弊命令系统 + Core 生命周期集成，依赖 tools） | `https://github.com/Herschy0829/com.coffeebean.debug.git#v0.1.1` |
 | `com.coffeebean.di` | 依赖注入（容器：构造/字段注入、单例/瞬时/作用域、子作用域，零依赖） | `https://github.com/Herschy0829/com.coffeebean.di.git#v0.1.0` |
 | `com.coffeebean.events` | 事件系统（EventBus 轻量 + EventCenter 受管） | `https://github.com/Herschy0829/com.coffeebean.events.git#v0.3.0` |

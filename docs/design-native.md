@@ -289,6 +289,32 @@ build.gradle 是**脚本不是 XML** → 采用**文本锚点注入**：
 - `launcher/src/main/res/...` 同理（配置 target）
 - proguard：`unityLibrary/proguard-unity.txt`（或 launcher）末尾追加 keep 规则（按行去重）
 
+### 5.7 Google Play 150MB AAB 分包（Play Asset Delivery asset packs）—— v0.1.1 新增
+
+AAB 超过 Google Play 下载大小限制（150MB 档）时，把大资源拆成 **asset pack**（install-time / fast-follow / on-demand）。
+build 模块在导出后自动完成工程侧全部工作，无需手改 gradle：
+
+**配置**（`CExportAndroidConfig.assetPacks`，每项 `CAndroidAssetPackConfig`）：
+- `name`：pack 名（目录名 + `packName`，小写字母/数字/下划线）
+- `deliveryType`：`install-time`（随安装包）/ `fast-follow`（装后即后台拉）/ `on-demand`（按需）
+- `sourceFolders`：要拆出的资源目录（`Assets/...` 或绝对路径；**内容**拷进 pack 的 `src/main/assets`）
+
+**导出后自动生成**（`CAndroidAssetPacksStep`，Order 10010，全幂等 + dry-run）：
+```
+<exportRoot>/<pack>/
+├── build.gradle                 # apply plugin: 'com.android.asset-pack'
+│                                # assetPack { packName='<pack>' dynamicDelivery { deliveryType='...' } }
+└── src/main/
+    ├── AndroidManifest.xml      # package = <应用包名>.assetpacks.<pack>（base 取自 launcher manifest）
+    └── assets/...               # 源目录内容（文件级幂等拷贝，含子目录）
+settings.gradle                  # 追加 include ':<pack>'（去重）
+unityLibrary/build.gradle        # 存在 fast-follow/on-demand pack 时自动注入
+                                 #   implementation 'com.google.android.play:core:1.10.3'
+```
+
+**注意**：被拆出的资源不要放 `Resources/`（会进 base 包）；运行时安装/请求 asset pack 属业务层
+（Play Core / Asset Delivery API），不在本模块范围。真实 AAB 产物验证需 Unity Android 导出 + bundletool/gradle bundle，留游戏工程接入轮。
+
 ---
 
 ## 6. iOS 平台设计（导出 Xcode 工程）
@@ -481,6 +507,7 @@ public sealed class MySdkAndroidStep : IExportStep
 | 版本 | 内容 |
 |------|------|
 | v0.1.0 | §2 范围全部（Manifest/gradle/gradle.properties/libs/res/env + plist/framework/BuildSettings/基础 Capability/文件入 target）；Sample + 测试；发布流程全套 |
+| v0.1.1 | Google Play 150MB AAB 分包：Play Asset Delivery asset packs（§5.7），pack 工程结构自动生成 + Play Core 条件注入 |
 | v0.2 候选 | CocoaPods 执行、flavor 矩阵 UI、xcframework 细节、entitlements merge 增强、CI 报告格式、其他平台（若需要） |
 
 ---
