@@ -150,13 +150,17 @@ namespace CoffeeBean
 
 ### 4.2 触发（Unity 构建回调，适配层职责）
 
-| 平台 | 回调 | 说明 |
-|------|------|------|
-| Android | `UnityEditor.Android.IPostGenerateGradleAndroidProject`（`OnPostGenerateGradleAndroidProject(path)`） | Gradle 工程生成后回调，path 为工程根；`callbackOrder` 排序 |
-| iOS | `IPostGenerateXcodeProject`（`UnityEditor.iOS.Xcode`） | Xcode 工程生成后回调（mac 构建机）；内部经 `PBXProject`/`PlistDocument` 操作 |
+调研结论（AdMob/OneSignal/Firebase 均用 `[PostProcessBuild]` + `#if UNITY_IOS` 条件编译做 iOS 后处理，
+Android 侧行业标准是 EDM4U 的 gradle 模板注入）：
 
-> 回调接口的具体命名/签名以 **Unity 6000.0.71f1 编辑器反射结果为准**（实施第一步验证，
-> 不同 6000.x 小版本可能有差异，适配层集中封装、业务不感知）。
+| 平台 | 首选回调 | 说明 |
+|------|----------|------|
+| iOS | `[PostProcessBuild(BuildTarget.iOS)]` 静态方法（`UnityEditor.Callbacks`） | 导出 Xcode 工程后触发，`path`=Xcode 工程根；`#if UNITY_IOS` 包裹避免无 iOS 模块时编译；适配层内统一入口 |
+| Android（导出工程模式） | `IPostGenerateGradleAndroidProject.OnPostGenerateGradleAndroidProject(path)` | 仅导出 Gradle 工程/构建时工程生成后触发，path=gradle 工程根 |
+| Android（直接出包模式） | `[PostProcessBuild]` 兜底 | 无法访问中间 gradle 工程时跳过工程注入并记日志 |
+
+> 回调接口的确切签名以 **Unity 6000.0.71f1 编辑器反射结果为准**（实施第一步验证），
+> 适配层集中封装，业务 API 稳定；iOS 后处理代码一律 `#if UNITY_IOS`（或平台 asmdef）防未装模块报错。
 
 ---
 
@@ -275,6 +279,9 @@ build.gradle 是**脚本不是 XML** → 采用**文本锚点注入**：
 - 幂等：按文件名去重（同名同字节跳过）；拷贝后可选自动在目标 gradle 的 `dependencies {` 追加 `implementation files('libs/xxx.aar')`
 - **与 Unity `Assets/Plugins/Android` 的关系**：静态库仍建议放 `Plugins/Android`（Unity 自动入 libs）；
   本模块的 libs 追加用于**动态/按渠道**决定放不放的场景（同一份代码不同导出注入不同库）
+- **`.androidlib` 模式（OneSignal/AdMob 实证）**：带源码+manifest 的 Android library 建议组织成
+  `Plugins/Android/*.androidlib` 目录（Unity 自动按 aar 编译合并、manifest 自动参与合并）；
+  本模块 libs 追加的是**无源码纯二进制**（.aar/.jar）场景
 
 ### 5.6 res / proguard（CAndroidRes）
 
@@ -298,7 +305,10 @@ build.gradle 是**脚本不是 XML** → 采用**文本锚点注入**：
 
 ### 6.1 Info.plist 注入（CIosPlist）
 
-纯 XML（plist 格式）解析/写入，**不依赖 PlistDocument**（Windows 上也能测）；mac 构建机再用 PlistDocument 落盘或直接写 XML（格式兼容）。
+实现双轨（与 AdMob `PListProcessor.cs` 同思路，实证见 §14）：
+- **mac 构建机**：直接用 `UnityEditor.iOS.Xcode.PlistDocument` —— `ReadFromFile` → `root.SetString` /
+  `root.CreateArray` → 已存在键用 `values.TryGetValue + AsArray/AsDict` 做**幂等合并** → `WriteToString` 落盘
+- **Windows/纯逻辑**：内置 plist XML 读写器（测试与 dry-run 用），格式与 PlistDocument 输出兼容
 
 | 场景 | 键 | 注入 |
 |------|-----|------|
@@ -426,6 +436,9 @@ public sealed class MySdkAndroidStep : IExportStep
 - Hub：Editor 工具窗口 `CExportConfigWindow`（读/写/试跑 dry-run）经 `CoffeeBeanToolAttribute` 注册进 Core Hub（**不注册任何 Window/CoffeeBean 子菜单**，遵守 Hub 规则）
 - CI：`CoffeeBean.ExportCli.Run -exportRoot -configPath` 静态入口（无窗口运行）
 - Sample：`Samples~/NativeExportDemo`（含一份最小配置资产 + 文档化步骤示例 + 假导出目录演练）
+- **与 EDM4U（External Dependency Manager for Unity）互补定位**：EDM4U 管"第三方 maven/gradle 依赖与 iOS CocoaPods 解析"
+  （SDK 写 `*.Dependencies.xml` 声明即可），本模块管"工程文件内容定制"（manifest/plist/build settings/文件入 target/环境）。
+  若检测到 EDM4U 已安装，配置资产中提示依赖类诉求走 EDM4U（避免 gradle 依赖双份注入冲突）
 
 ---
 
@@ -456,6 +469,7 @@ public sealed class MySdkAndroidStep : IExportStep
 | framework 模型 | 系统/动态/静态/源文件条目解析、embed 标志 |
 | 管线 | 步骤顺序、Order、开关、异常中止、dry-run、session 幂等表、日志 |
 | 配置合并 | JSON→模型、多源覆盖优先级 |
+| 期望产物快照 | （借鉴 EDM4U `ExpectedArtifacts` 模式）预置"注入后应得"的完整文件文本，注入后逐字符对比 |
 | Unity 回调适配层 | （如 Editor 环境允许）触发一次假导出走完整链路 |
 
 **发布前验收**：dev 工程全量 EditMode 绿 + Sample 可打开 + 真机/模拟器验证留到游戏工程接入轮。
@@ -476,3 +490,35 @@ public sealed class MySdkAndroidStep : IExportStep
 1. 模块名：`com.coffeebean.build`（推荐）/ `com.coffeebean.export` / `com.coffeebean.native`？
 2. 单包（推荐）还是 Android/iOS 拆两包？
 3. v0.1.0 范围是否照 §2；有无优先要加的注入类型（如多渠道、签名、Podfile 执行提前）？
+
+---
+
+## 14. 开源参考调研（2026-09）
+
+> 目的：确认业界成熟做法，校准触发回调/注入 API/测试策略。已确认真实仓库与关键源码。
+
+### 14.1 参考项目清单
+
+| 项目 | Stars | 与本模块的关系 | 关键实证 |
+|------|-------|----------------|----------|
+| [googlesamples/unity-jar-resolver](https://github.com/googlesamples/unity-jar-resolver)（EDM4U，Google 官方） | 1472 | Android/iOS **第三方依赖解析**标准件 | gradle 模板注入（mainTemplate/settingsTemplate，含 `DISABLED` 命名开关、Unity 版本分支）；iOS CocoaPods；**期望产物快照测试**（ExpectedArtifacts） |
+| [googleads/googleads-mobile-unity](https://github.com/googleads/googleads-mobile-unity)（AdMob 官方） | 1547 | iOS plist / Android manifest 注入直接范本 | `PListProcessor.cs`：`[PostProcessBuild]` + `#if UNITY_IOS`；`PlistDocument.ReadFromFile → SetString/CreateArray → WriteToString`；SKAdNetworkItems 幂等数组合并；ScriptableObject 承载 appId/权限文案；空配置**中止构建** |
+| [firebase/firebase-unity-sdk](https://github.com/firebase/firebase-unity-sdk)（Firebase 官方） | 320 | 大规模多 SDK 依赖管理范本 | 全部经 EDM4U `*.Dependencies.xml` 声明 android 依赖/iOS pods+frameworks；本模块与其互补 |
+| [OneSignal/OneSignal-Unity-SDK](https://github.com/OneSignal/OneSignal-Unity-SDK) | 228 | iOS framework/capability + Android manifest | `com.onesignal.unity.ios/Editor/BuildPostProcessor.cs` + `PBXProjectExtensions.cs`（**PBX 封装为扩展方法**）；Android 用 `.androidlib` 目录自带 manifest；example 含 `SigningPostProcessor.cs`（签名注入） |
+| [facebook/facebook-sdk-for-unity](https://github.com/facebook/facebook-sdk-for-unity) | 505 | 老牌 plist/framework 后处理参考 | 历史实现覆盖 plist 键注入与 framework 追加的完整边界案例 |
+| [TylerTemp/SaintsBuild](https://github.com/TylerTemp/SaintsBuild) | 21 | 多平台打包工具视角 | android/ios/windows/mac 打包 + 后处理编排的整体结构参考 |
+| [MartinGonzalez/unity-android-manifest-placeholders-resolver](https://github.com/MartinGonzalez/unity-android-manifest-placeholders-resolver) | 1 | Manifest 占位符注入思路 | `${var}` 占位符 → build.gradle 值替换（manifest 动态化的另一条路） |
+
+### 14.2 结论与本设计校准
+
+1. **iOS 触发回调**：行业主流 = `[PostProcessBuild]` 静态方法 + `#if UNITY_IOS`（AdMob/OneSignal 均如此），
+   而非 `IPostGenerateXcodeProject` 接口 → 本设计 §4.2 已按此校准
+2. **plist 注入**：`UnityEditor.iOS.Xcode.PlistDocument` 的 `root.SetString/CreateArray/AsArray` + `WriteToString`
+   是标准 API；幂等靠"key 已存在 → 取数组/字典合并" → §6.1 已校准
+3. **Android 依赖**：业界几乎都交给 EDM4U（gradle 模板 + `*.Dependencies.xml`），SDK 自身很少直接改 build.gradle
+   → 本模块**不重复造依赖解析**，专注工程内容定制（manifest/文件/属性/环境），并在 §9 声明互补关系
+4. **配置承载**：ScriptableObject（AdMob `GoogleMobileAdsSettings`）是通用模式 → 本设计 §7 用
+   `CExportConfig` ScriptableObject 包壳 + JSON 导入导出
+5. **失败语义**：AdMob 空 appId 直接 `BuildFailedException` 中止 → 本设计异常中止构建一致
+6. **测试方法**：EDM4U 用期望产物快照对比（含版本分支、DISABLED 开关矩阵）→ §11 测试计划已加
+7. **Android 库携带**：`.androidlib`（自动编译 aar + manifest 合并）是带源码库的推荐形态，本模块只补纯二进制 libs 场景
