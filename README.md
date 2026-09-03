@@ -22,7 +22,7 @@ CoffeeBean/                      # 框架根仓库（本仓库）
 
 | 模块 | 功能 | Git 引用 |
 |------|------|----------|
-| `com.coffeebean.ad` | 广告（统一框架：激励/插屏(可选)/生命周期/可插拔后端/打点联动，依赖 tools + telemetry） | `https://github.com/Herschy0829/com.coffeebean.ad.git#v0.1.0` |
+| `com.coffeebean.ad` | 广告（统一框架：激励/插屏(可选)/生命周期/可插拔后端/打点联动，依赖 tools + telemetry） | `https://github.com/Herschy0829/com.coffeebean.ad.git#v0.1.1` |
 | `com.coffeebean.asset` | 资源（Addressables 封装：加载/实例化/预加载/标签/引用计数释放 + Pin 常驻 + 自动释放钩子 + 依赖分析 + 组件绑定 + 更新下载，可插拔后端，依赖 tools + addressables） | `https://github.com/Herschy0829/com.coffeebean.asset.git#v0.2.2` |
 | `com.coffeebean.core` | 模块管理 / 引导 / 服务注册（Window/CoffeeBean 工具中心，含 COFFEEBEAN_CORE 宏安装） | `https://github.com/Herschy0829/com.coffeebean.core.git#v0.1.39` |
 | `com.coffeebean.debug` | 调试（游戏内控制台：日志捕获/过滤/搜索 + 作弊命令系统 + Core 生命周期集成，依赖 tools） | `https://github.com/Herschy0829/com.coffeebean.debug.git#v0.1.1` |
