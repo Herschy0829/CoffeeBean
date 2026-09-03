@@ -1,7 +1,7 @@
 # CoffeeBean 广告与打点模块设计（com.coffeebean.ad / com.coffeebean.telemetry）
 
-> 版本：v0.1（草案，待确认）
-> 状态：待实施
+> 版本：v0.1（已实施）
+> 状态：✅ 已实施（com.coffeebean.telemetry v0.1.0 + com.coffeebean.ad v0.1.0，2026-09-03 发布）
 
 ---
 
