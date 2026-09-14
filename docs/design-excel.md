@@ -1,7 +1,7 @@
 # CoffeeBean Excel 配置表工具模块设计（com.coffeebean.excel）
 
 > 版本：v0.1（草案，待确认）
-> 状态：**已实施（v0.1.0，2025）**——CExcelReader / CExcelTypeInfer / CExcelGenerator（JSON + C# 类 + Getter）/ 工具窗口 / ExcelDemo 已实现并发布；测试 27 个（EditMode）；purchase 0.1.6 已迁移依赖
+> 状态：**已实施**（com.coffeebean.excel **v0.2.3**）——CExcelReader / CExcelTypeInfer / CExcelGenerator（JSON + C# 类 + Getter）/ 工具窗口 / ExcelDemo 已实现并发布；测试 27 个（EditMode）；purchase 已迁移依赖
 
 ---
 

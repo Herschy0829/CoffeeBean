@@ -2,7 +2,7 @@
 
 > 版本：v0.2（设计定稿，已确认决策）
 > 依赖：Unity IAP **5.4.x**（com.unity.purchasing）
-> 状态：待实施
+> 状态：**已实施**（com.coffeebean.purchase **v0.4.0**，2026-09-14；另依赖 com.coffeebean.excel v0.2.3）
 
 ---
 

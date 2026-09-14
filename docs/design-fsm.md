@@ -1,7 +1,7 @@
 # CoffeeBean 状态机模块设计（com.coffeebean.fsm）
 
 > 版本：v0.1（草案，待确认）
-> 状态：**已实施（v0.1.0，2025）**——CStateMachine&lt;TStateId&gt; / IState / 全局状态 / OnStateChanged 已实现并发布；测试 14 个（EditMode）
+> 状态：**已实施**（com.coffeebean.fsm **v0.2.0**）——CStateMachine&lt;TStateId&gt; / IState / 全局状态 / OnStateChanged 已实现并发布；测试 14 个（EditMode）
 
 ---
 

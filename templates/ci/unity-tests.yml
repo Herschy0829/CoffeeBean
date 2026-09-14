@@ -1,0 +1,65 @@
+# Unity EditMode/PlayMode 测试（模块仓库用）
+#
+# ⚠️ 启用前必读：docs/ci.md
+#   本工作流**开箱即用之前还需要两件事**，否则它只会被跳过（不会误报失败）：
+#     1. 仓库/组织 secrets 里配好 UNITY_LICENSE（+ 可选 UNITY_EMAIL / UNITY_PASSWORD）
+#     2. 仓库里有一个可用的 Unity 测试工程，并在其 Packages/manifest.json 的
+#        testables 里登记本包 —— 模块仓库本身只是"包"，不是 Unity 工程，无法独立跑测试
+#
+# 触发：推 tag（v*）= 发布即验证；以及手动触发 / PR。
+
+name: Unity Tests
+
+on:
+  push:
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: EditMode
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Check Unity license secret
+        id: license
+        # 没配 secret 时优雅跳过，而不是让每次 push 都红一片
+        run: echo "have=${{ secrets.UNITY_LICENSE != '' }}" >> "$GITHUB_OUTPUT"
+
+      - name: Skip notice
+        if: steps.license.outputs.have != 'true'
+        run: |
+          echo "::notice::未配置 UNITY_LICENSE，跳过测试。见 docs/ci.md 了解如何启用。"
+
+      - name: Cache Library
+        if: steps.license.outputs.have == 'true'
+        uses: actions/cache@v4
+        with:
+          path: <TEST_PROJECT>/Library
+          key: Library-${{ runner.os }}-${{ hashFiles('<TEST_PROJECT>/Packages/manifest.json') }}
+          restore-keys: Library-${{ runner.os }}-
+
+      - name: Run EditMode tests
+        if: steps.license.outputs.have == 'true'
+        uses: game-ci/unity-test-runner@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: <TEST_PROJECT>
+          testMode: EditMode
+          artifactsPath: test-results
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: EditMode Test Results
+
+      - name: Upload results
+        if: always() && steps.license.outputs.have == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: EditMode-Test-Results
+          path: test-results

@@ -1,7 +1,7 @@
 # CoffeeBean 存档模块设计（com.coffeebean.save）
 
 > 版本：v0.1
-> 状态：已实施（com.coffeebean.save v0.1.0，2026-08-27 发布）
+> 状态：已实施（com.coffeebean.save **v0.1.1**，2026-09-14）
 
 ---
 

@@ -1,7 +1,7 @@
 # CoffeeBean 对象池模块设计（com.coffeebean.pooling）
 
 > 版本：v0.1（草案，待确认）
-> 状态：**已实施（v0.1.0，2025）**——CPool&lt;T&gt; / CGameObjectPool / IPoolable / ReleaseDelayed 已实现并发布；测试 23 个（EditMode）
+> 状态：**已实施**（com.coffeebean.pooling **v0.2.0**）——CPool&lt;T&gt; / CGameObjectPool / IPoolable / ReleaseDelayed 已实现并发布；测试 23 个（EditMode）
 
 ---
 

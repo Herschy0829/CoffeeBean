@@ -1,7 +1,7 @@
 # CoffeeBean 资源管理模块设计（com.coffeebean.asset）
 
 > 版本：v0.1
-> 状态：已实施（com.coffeebean.asset v0.1.0，2026-08-28 发布；后端 Addressables，可插拔 IAssetBackend）
+> 状态：已实施（com.coffeebean.asset **v0.3.0**，2026-09-14；后端 Addressables，可插拔 IAssetBackend）
 
 ---
 
@@ -111,7 +111,6 @@ public sealed class CAssetSystem
 ```csharp
 public sealed class CAssetOptions
 {
-    bool AutoInitialize;               // 首次访问自动初始化（默认 true）
     bool FailSilently;                 // 加载失败仅告警不抛错（默认 true）
     string AddressPrefix;              // 可选统一前缀（默认 ""，对齐 AblesNaming 由业务决定）
     // TMP 动态字体参数（对齐 TmpData，避免逻辑重复）
