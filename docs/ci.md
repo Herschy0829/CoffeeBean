@@ -41,6 +41,8 @@ TOTAL=461 PASSED=461 FAILED=0 SKIPPED=0 RESULT=Passed
 
 ## 3. 启用前还差什么
 
+**只差一样：Unity 授权 secret。**
+
 ### (a) Unity 授权 secret —— 必需
 
 在根仓库 **Settings → Secrets and variables → Actions** 配置：
@@ -56,15 +58,15 @@ TOTAL=461 PASSED=461 FAILED=0 SKIPPED=0 RESULT=Passed
 获取 `.ulf`：本地激活一次 Unity 后从 `C:\ProgramData\Unity\Unity_lic.ulf` 取内容，或按
 game-ci 的[激活文档](https://game.ci/docs/github/activation)用 Docker 生成。
 
-### (b) 模块仓库可见性 —— 视情况
+### (b) 模块仓库可见性 —— 已满足，无需配置
 
-工作流的 clone 步骤：
-- 模块仓库是 **public** → 直接 `git clone` 即可，无需额外配置
-- 模块仓库含 **private** → 需配 `MODULE_CLONE_TOKEN`（有这些仓库读权限的 PAT）。
-  注意默认的 `GITHUB_TOKEN` 只能访问当前仓库，**不能**用来 clone 其他私有仓库
+工作流的 clone 步骤：public 仓库直接 `git clone` 即可，**不需要**任何 token。
 
-按 `design.md` §11，根仓库 / core / events / purchase 目前是私有的 —— 若保持私有，就必须配
-`MODULE_CLONE_TOKEN`；若转公开则不需要。
+已核实（2026-09-14，GitHub API）：根仓库与全部 17 个模块仓库**都是 public**。
+
+> 注：`design.md` §11 记录的是"根/Core/events/purchase 保持私有"，该状态**已过时** —— 这些仓库后来已转公开。
+> 若将来有模块仓库改回 private，则需额外配 `MODULE_CLONE_TOKEN`（有读权限的 PAT）：
+> 默认的 `GITHUB_TOKEN` 只能访问当前仓库，**不能**用来 clone 其他私有仓库。
 
 ### (c) Actions 分钟数
 

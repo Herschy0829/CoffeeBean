@@ -340,4 +340,8 @@ Loading → Main 场景切换不会销毁框架，上下文全程存活）
 | 仓库布局 | **框架根仓库（本目录）+ 独立 Core 模块仓库** |
 | 首期范围 | **Core + events 一个验证模块** |
 | GitHub 账号 | **个人账号**（暂不建组织，URL 以 `Herschy0829` 占位） |
-| 仓库可见性 | **后续新建的模块仓库默认公开（public）**；现有 4 个仓库（根/Core/events/purchase）保持私有，需转公开时单独处理 |
+| 仓库可见性 | ~~后续新建的模块仓库默认公开（public）；现有 4 个仓库（根/Core/events/purchase）保持私有，需转公开时单独处理~~ **已过时** —— 截至 2026-09-14，根仓库与全部 17 个模块仓库**均为 public**（见下方更正） |
+
+> **更正（2026-09-14）**：上表"仓库可见性"一行已不反映现状。经 GitHub API 核实，
+> `Herschy0829/CoffeeBean` 及 17 个 `com.coffeebean.*` 仓库全部为 **public**。
+> 这使 CI 可以直接 `git clone` 各模块而无需额外 token（见 `docs/ci.md` §3(b)）。
