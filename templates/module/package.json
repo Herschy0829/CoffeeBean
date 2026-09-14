@@ -8,9 +8,7 @@
     "name": "Herschy0829"
   },
   "keywords": ["coffeebean"],
-  "dependencies": {
-    "com.coffeebean.core": "0.1.0"
-  },
+  "dependencies": {},
   "testables": ["com.coffeebean.template"],
   "samples": [
     {

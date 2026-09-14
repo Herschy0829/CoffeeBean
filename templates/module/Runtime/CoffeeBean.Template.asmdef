@@ -1,9 +1,7 @@
 {
   "name": "CoffeeBean.Template",
-  "rootNamespace": "CoffeeBean.Template",
-  "references": [
-    "CoffeeBean.Core"
-  ],
+  "rootNamespace": "CoffeeBean",
+  "references": [],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
@@ -11,6 +9,12 @@
   "precompiledReferences": [],
   "autoReferenced": true,
   "defineConstraints": [],
-  "versionDefines": [],
+  "versionDefines": [
+    {
+      "name": "com.coffeebean.core",
+      "expression": "",
+      "define": "COFFEEBEAN_CORE"
+    }
+  ],
   "noEngineReferences": false
 }

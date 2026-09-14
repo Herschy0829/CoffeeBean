@@ -1,9 +1,8 @@
 {
   "name": "CoffeeBean.Template.Editor",
-  "rootNamespace": "CoffeeBean.Template.Editor",
+  "rootNamespace": "CoffeeBean.EditorTools",
   "references": [
-    "CoffeeBean.Template",
-    "CoffeeBean.Core"
+    "CoffeeBean.Template"
   ],
   "includePlatforms": [
     "Editor"

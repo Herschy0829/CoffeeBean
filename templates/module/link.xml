@@ -1,7 +1,11 @@
 <linker>
   <!--
     保留模块程序集，确保 [assembly: CoffeeBeanModule] 特性在构建（IL2CPP / 代码裁剪）后仍可被发现。
-    程序集名以你的模块 asmdef 为准，例如 CoffeeBean.Template。
+    Bridge 模式下列**两个**程序集：
+      · 主程序集：模块的运行时代码
+      · Bridge 程序集：模块标记 + Core 生命周期（未装 Core 时不参与编译，此时保留规则无副作用）
+    程序集名以你的 asmdef 为准。
   -->
   <assembly fullname="CoffeeBean.Template" preserve="all"/>
+  <assembly fullname="CoffeeBean.Template.Bridge" preserve="all"/>
 </linker>

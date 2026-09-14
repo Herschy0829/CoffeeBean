@@ -1,0 +1,19 @@
+{
+  "name": "CoffeeBean.Template.Bridge",
+  "rootNamespace": "CoffeeBean",
+  "references": [
+    "CoffeeBean.Template",
+    "CoffeeBean.Core"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "COFFEEBEAN_CORE"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
