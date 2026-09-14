@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     在本地以批处理模式跑 CoffeeBean 的 EditMode 测试（等价于 CI 里要做的事）。
 
@@ -37,7 +37,7 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 if (-not $ProjectPath) { $ProjectPath = Join-Path $repoRoot 'dev' }
 
 if (-not (Test-Path $ProjectPath)) {
-    Write-Error "消费工程不存在：$ProjectPath（dev/ 是本地联调工程，未入库；请先按 README 准备）"
+    Write-Error "消费工程不存在：$ProjectPath（CI 场景下应为 checkout 出来的 dev/；若 packages/ 为空，还需先把各模块 clone 进去）"
 }
 
 if (-not $UnityPath) {

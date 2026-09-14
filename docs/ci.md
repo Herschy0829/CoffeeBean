@@ -1,77 +1,120 @@
 # CI（持续集成）
 
-> 状态：**脚手架已就绪，但尚未启用** —— 启用前需要你补两件我无法代办的事，见下面「启用前提」。
+> 状态：**工作流已就位，本地等价流程已验证通过；真正在 GitHub 上跑起来只差授权 secret。**
+> 工作流：`.github/workflows/unity-tests.yml`（框架根仓库）
 
-## 1. 为什么还不能直接跑
+## 1. 为什么 CI 放在根仓库，而不是各模块仓库
 
-设计文档 `design.md` §9 规划的是"每个模块仓库配 Unity Test Runner，`on tag push` 触发"。但按当前仓库布局，**没有一个仓库能独立跑测试**：
+设计文档 `design.md` §9 当初规划的是"每个模块仓库配 Unity Test Runner"。实施时发现按本仓库布局**做不到**：
 
-| 位置 | 是否是 Unity 工程 | 能否跑测试 |
+| 位置 | 是否是 Unity 工程 | 能否独立跑测试 |
 |---|---|---|
-| 框架根仓库（本仓库） | ❌ 只有 `docs/` `templates/` `scripts/` | ❌ |
-| `packages/<模块>` | ❌ 只是 UPM 包（`package.json` + `Runtime/`…） | ❌ |
-| `dev/`（联调工程） | ✅ 是 | ✅ **但它被 `.gitignore` 忽略、未入库** |
+| 框架根仓库 | ✅ 含 `dev/`（消费工程） | ✅ |
+| `packages/<模块>` | ❌ 只是 UPM 包 | ❌ |
 
-也就是说：**测试必须在一个"消费工程"里跑**（该工程的 `Packages/manifest.json` 要引用各模块，并在 `testables` 里登记才能启用其测试程序集）。目前这个工程只存在于本地 `dev/`。
+模块仓库里只有 `package.json` + `Runtime/`，没有工程文件；测试必须在一个**消费工程**里跑。
+能跑测试的消费工程是 `dev/` —— 它通过 `file:` 引用各模块，且 `manifest.json` 的 `testables` 已登记全部包。
 
-## 2. 启用前提（需要你决定/提供）
+所以：**把 `dev/` 纳入根仓库版本控制**（已完成），CI 在根仓库跑；各模块仓库不再各配一份重复工程。
 
-### (a) `dev/` 的处置
+## 2. 已完成的改动
 
-三选一：
+| 改动 | 说明 |
+|---|---|
+| `dev/` 入库 | 只排除生成物（`Library/` `Temp/` `obj/` `Logs/` `UserSettings/` `TestResults/`）。共 200 个文件 / 1.4 MB —— 若把 `Library/`+`TestResults/` 也提交会多出约 300 MB |
+| `scripts/run-editmode-tests.ps1` | 本地跑 EditMode 测试，等价于 CI 做的事 |
+| `.github/workflows/unity-tests.yml` | 根仓库的 CI 工作流 |
 
-| 方案 | 说明 | 代价 |
-|---|---|---|
-| **把 `dev/` 纳入版本控制**（推荐） | CI 直接用根仓库的 `dev/`，模块按 tag 拉取到 `packages/`；与本地开发完全同构 | 要收编工程文件；`Library/` 等仍需忽略 |
-| 新建精简 `ci/TestProject` | 只放 `ProjectSettings/` + `Packages/manifest.json` + 测试所需 Assets | 要重新搭一遍；Addressables 相关测试需要相应的配置资产 |
-| 每个模块仓库各带一个 `TestProject~` | 模块自包含、互相不干扰 | 17 份重复工程，维护成本高 |
+### 已验证：干净 checkout 能构建并通过全部测试
 
-### (b) Unity 授权 secret
+用 `git worktree` 取出**仅被追踪的文件**（模拟一次全新 clone），再把 17 个模块复制进 `packages/`，
+对 `dev/` 跑完整 EditMode 套件：
 
-每个要跑 CI 的仓库需配：
+```
+TOTAL=461 PASSED=461 FAILED=0 SKIPPED=0 RESULT=Passed
+```
+
+这证明了 **`dev/` 所需的文件全部在版本控制里**，没有遗漏（例如漏提交 `.meta`、Addressables 配置或 `ProjectSettings`）。
+
+> ⚠️ 未验证的部分：`unity-tests.yml` 这个 YAML **本身从未在 GitHub Actions 上跑过**
+> （本地无法执行 Actions）。它依赖的每个动作（clone → 构建 → 跑测试）都已用上述方式在本地等价验证。
+
+## 3. 启用前还差什么
+
+### (a) Unity 授权 secret —— 必需
+
+在根仓库 **Settings → Secrets and variables → Actions** 配置：
 
 | Secret | 必需 | 说明 |
 |---|---|---|
-| `UNITY_LICENSE` | ✅ | Unity 授权文件内容（`.ulf` 的 XML） |
+| `UNITY_LICENSE` | ✅ | Unity 授权文件（`.ulf`）内容 |
 | `UNITY_EMAIL` | 可选 | 用账号密码激活时需要 |
 | `UNITY_PASSWORD` | 可选 | 同上 |
 
-> 工作流已做**优雅跳过**：没配 `UNITY_LICENSE` 时不会报错，只打一条 notice。
+未配置时工作流**优雅跳过**（打印一条 notice），不会让 push 变红。
 
-### (c) 一个依赖来源问题
+获取 `.ulf`：本地激活一次 Unity 后从 `C:\ProgramData\Unity\Unity_lic.ulf` 取内容，或按
+game-ci 的[激活文档](https://game.ci/docs/github/activation)用 Docker 生成。
 
-`com.coffeebean.save` 依赖 `com.cysharp.memorypack`，目前是**vendored 在 `dev/Packages/` 下**（也被 gitignore）。
-CI 里没有这个包就编译不过 save 及其测试。需要决定：改用 git URL 引用上游、还是把 vendored 副本入库。
+### (b) 模块仓库可见性 —— 视情况
 
-### (d) 其它
+工作流的 clone 步骤：
+- 模块仓库是 **public** → 直接 `git clone` 即可，无需额外配置
+- 模块仓库含 **private** → 需配 `MODULE_CLONE_TOKEN`（有这些仓库读权限的 PAT）。
+  注意默认的 `GITHUB_TOKEN` 只能访问当前仓库，**不能**用来 clone 其他私有仓库
 
-- GitHub Actions 分钟数：Unity 镜像很重，私有仓库按分钟计费；`actions/cache` 缓存 `Library/` 可显著降低成本（工作流已配）。
-- 模块仓库大多开了"禁止直接推送、必须走 PR"的分支保护 —— CI 触发策略（tag / PR / push）需要与此一致。
+按 `design.md` §11，根仓库 / core / events / purchase 目前是私有的 —— 若保持私有，就必须配
+`MODULE_CLONE_TOKEN`；若转公开则不需要。
 
-## 3. 已就绪的东西
+### (c) Actions 分钟数
 
-| 文件 | 用途 |
-|---|---|
-| `scripts/run-editmode-tests.ps1` | **本地**批处理跑 EditMode 测试，等价于 CI 要做的事。已实测可用 |
-| `templates/ci/unity-tests.yml` | 模块仓库用的 GitHub Actions 工作流模板（game-ci + 缓存 + 授权跳过 + 产物上传）。把 `<TEST_PROJECT>` 换成实际工程路径后即可使用 |
+Unity 镜像较重。工作流已用 `actions/cache` 缓存 `dev/Library/` 降低重复构建成本。
+私有仓库按分钟计费，公开仓库免费。
 
-### 本地跑测试
+## 4. 模块版本只有一处真相
+
+工作流**不硬编码**各模块版本：它先拉 `core`（`CORE_TAG`，唯一需要在此维护的版本号），
+再从 core 内置的模块目录 `coffeebean.registry.json` 读出每个模块的 `latest` tag 逐个 clone。
+
+这样"模块版本"只在 registry 里维护一次，避免 README / registry / CI 三处漂移
+（框架里已经踩过这个坑：`asset` 的 Bridge 版本一度落后 `package.json` 两个版本）。
+
+## 5. 本地跑测试
 
 ```powershell
-# 全部 EditMode 测试（当前 dev 工程为 461 个）
+# 全部 EditMode
 pwsh -File scripts/run-editmode-tests.ps1
 
 # 只跑某个模块
 pwsh -File scripts/run-editmode-tests.ps1 -Assembly CoffeeBean.Build.Tests
 ```
 
-> 脚本里之所以用 `Start-Process` + `Wait-Process` 而不是 `& Unity.exe`：
-> **Unity.exe 是 GUI 子系统程序**，用 `&` 调用会立即返回，既拿不到退出码也等不到结果文件。
+脚本里用 `Start-Process` + `Wait-Process` 而非 `& Unity.exe`：**Unity.exe 是 GUI 子系统程序**，
+用 `&` 调用会立即返回，既拿不到退出码也等不到结果文件。
 
-## 4. 建议的启用顺序
+> 脚本文件带 UTF-8 BOM。Windows PowerShell 5.1 会把无 BOM 文件按 ANSI 读，中文会解析失败。
 
-1. 定 (a) 方案 → 把测试工程纳入某个仓库
-2. 定 (c) MemoryPack 来源
-3. 在目标仓库配 (b) 的 secret
-4. 复制 `templates/ci/unity-tests.yml` → `.github/workflows/unity-tests.yml`，替换 `<TEST_PROJECT>`
-5. 先手动 `workflow_dispatch` 跑通一个模块，再铺开到其余模块
+## 6. 附：MemoryPack 依赖的评估结论
+
+`com.coffeebean.save` 依赖 `com.cysharp.memorypack`。曾考虑"改用上游 git URL 取代本地 vendored 副本"，
+调研后**结论是不改**，原因如下。
+
+上游 README 明确要求 Unity 侧装**两样**：
+
+1. 用 [NuGetForUnity](https://github.com/GlitchEnzo/NuGetForUnity) 从 NuGet 装 `MemoryPack`
+   （提供 `MemoryPack.Core.dll` 运行时 + `MemoryPack.Generator.dll` **源生成器**）
+2. 再引 git URL 装 `MemoryPack.Unity` 胶水包：
+   `https://github.com/Cysharp/MemoryPack.git?path=src/MemoryPack.Unity/Assets/MemoryPack.Unity#1.21.4`
+
+已用 GitHub API 核实：该 git URL 指向的目录**只有** `Runtime/`（3 个文件）+ `package.json`，
+**不含任何 DLL，也不含源生成器**。
+
+也就是说 git URL 只覆盖了第 2 步。若只做这一步而移除本地副本，`MemoryPack.Generator.dll` 缺失会导致
+所有 `[MemoryPackable]` 类型**编译失败**（save 模块的测试数据就是这类）。
+
+当前 `dev/Packages/com.cysharp.memorypack` 正是"胶水 + NuGet 解包 DLL"的合并副本，其中
+`MemoryPack.Generator.dll.meta` 带 `RoslynAnalyzer` 标签（Unity 靠它把 DLL 当源生成器）。
+由于 `dev/` 现已入库，这份副本也随之纳入版本控制，CI 能正常取到 —— 因此**无需**再拆分。
+
+若将来确实要换成上游 git URL，则必须同时决定源生成器从哪来（引入 NuGetForUnity，或只把 DLL 单独 vendored），
+不能只改 manifest 里的那一行。

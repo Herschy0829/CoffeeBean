@@ -6,24 +6,24 @@
 
 ```
 CoffeeBean/                      # 框架根仓库（本仓库）
+├── .github/workflows/           # CI：checkout dev/ + clone 各模块 → 跑 EditMode 测试
 ├── docs/
 │   ├── design.md                # 框架设计文档（先读这个；§0 说明已演进的架构）
-│   └── ci.md                    # CI 说明（当前尚未启用，见该文档的"启用前提"）
-├── packages/                    # 各模块的开发 checkout（各自独立 git 仓库）
-│   ├── com.coffeebean.core/     #   Core 模块：注册/引导/服务注册/模块管理
-│   └── com.coffeebean.events/   #   类型安全事件总线（首个验证模块）
+│   └── ci.md                    # CI 说明（工作流已就位，启用只差授权 secret）
+├── packages/                    # 各模块的开发 checkout（各自独立 git 仓库，不入库）
 ├── templates/
-│   ├── module/                  # 新模块脚手架（复制即用，Bridge 模式）
-│   └── ci/                      # 模块仓库的 GitHub Actions 工作流模板
+│   └── module/                  # 新模块脚手架（复制即用，Bridge 模式）
 ├── scripts/
 │   └── run-editmode-tests.ps1   # 本地跑 EditMode 测试（等价于 CI）
-└── dev/                         # 本地联调 Unity 工程（不入库）
+└── dev/                         # 联调 Unity 工程（**已入库**：CI 需要一个消费工程来跑测试）
 ```
 
-> `packages/` 与 `dev/` 已被 `.gitignore` 忽略：每个模块在 `packages/` 下是独立的 git 仓库，各自推送各自的 GitHub 仓库。
+> `packages/` 已被 `.gitignore` 忽略：每个模块在 `packages/` 下是独立的 git 仓库，各自推送各自的 GitHub 仓库。
+> CI 与本地联调都需要把模块 clone 进 `packages/`（`dev/Packages/manifest.json` 用 `file:` 引用它们）。
 
-> **CI 尚未启用**：模块仓库本身只是"包"、不是 Unity 工程，测试必须在消费工程（`dev/`）里跑，
-> 而 `dev/` 未入库；再加上每个仓库需要 Unity 授权 secret。参见 `docs/ci.md`。
+> **CI 状态**：模块仓库本身只是"包"、不是 Unity 工程，测试必须在消费工程（`dev/`）里跑 ——
+> 因此 `dev/` 已入库，CI 放在根仓库。工作流已就位且**干净 checkout 的完整流程已在本地验证通过（461/461）**；
+> 在 GitHub 上真正跑起来只差 Unity 授权 secret。详见 `docs/ci.md`。
 
 ## 模块列表
 
@@ -92,7 +92,7 @@ pwsh -File scripts/run-editmode-tests.ps1 -Assembly CoffeeBean.Build.Tests  # �
 ```
 
 测试必须在 `dev/`（消费工程）里跑 —— 模块仓库本身只是"包"，不是 Unity 工程。
-CI 见 `docs/ci.md`（当前未启用，原因与启用步骤都在那）。
+CI 见 `docs/ci.md`（工作流已就位，启用只差授权 secret）。
 
 ## 新建一个模块
 
@@ -106,7 +106,7 @@ CI 见 `docs/ci.md`（当前未启用，原因与启用步骤都在那）。
 - 框架设计：`docs/design.md`（架构、模块规范、版本约定、实施路线）
   - **§0 架构演进**：原始设计里"所有模块依赖 Core""模块间禁止横向依赖"两条已被实际架构取代，先读 §0
 - 各模块设计：`docs/design-*.md`（net / save / ui / asset / excel / iap / ad / native / fsm / pooling / build-modes）
-- CI：`docs/ci.md`（当前未启用；含启用前提与工作流模板位置）
+- CI：`docs/ci.md`（为什么 CI 在根仓库、干净 checkout 已验证 461/461、启用需要的 secret）
 
 ## License
 

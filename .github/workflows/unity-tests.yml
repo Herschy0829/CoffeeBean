@@ -1,0 +1,102 @@
+name: Unity Tests
+
+# 在框架根仓库跑 EditMode 测试。
+#
+# 为什么 CI 放在**根仓库**而不是各模块仓库：
+#   模块仓库本身只是"包"、不是 Unity 工程，无法独立跑测试；能跑测试的消费工程是 dev/，
+#   而 dev/ 属于根仓库。因此这里 checkout 根仓库的 dev/，再把各模块 clone 进 packages/。
+#
+# 触发：推 main、推 tag（发布即验证）、PR、手动。
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  editmode:
+    name: EditMode
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # ---------------------------------------------------------------------
+      # 各模块是独立 git 仓库，packages/ 被 .gitignore 忽略 —— CI 必须自己 clone。
+      # 版本**不在本文件里硬编码**：core 先按下面的 CORE_TAG 拉下来，
+      # 再从它内置的模块目录（registry.json）读出每个模块的 latest tag。
+      # 这样"模块版本"只有一处真相（registry），避免 README / registry / CI 三处漂移。
+      # ---------------------------------------------------------------------
+      - name: Clone core
+        env:
+          # 唯一需要在此维护的版本号：core 自身
+          CORE_TAG: v0.1.44
+          # 若模块仓库是私有的，需配 MODULE_CLONE_TOKEN（见 docs/ci.md）
+          CLONE_TOKEN: ${{ secrets.MODULE_CLONE_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p packages
+          if [ -n "${CLONE_TOKEN:-}" ]; then
+            URL="https://x-access-token:${CLONE_TOKEN}@github.com/Herschy0829/com.coffeebean.core.git"
+          else
+            URL="https://github.com/Herschy0829/com.coffeebean.core.git"
+          fi
+          git clone --depth 1 --branch "$CORE_TAG" "$URL" packages/com.coffeebean.core
+
+      - name: Clone remaining modules from the registry
+        env:
+          CLONE_TOKEN: ${{ secrets.MODULE_CLONE_TOKEN }}
+        run: |
+          set -euo pipefail
+          REG=packages/com.coffeebean.core/Editor/Resources/coffeebean.registry.json
+          echo "registry:"; jq -r '.modules[] | "  \(.id) \(.latest)"' "$REG"
+          jq -r '.modules[] | "\(.id) \(.latest)"' "$REG" | while read -r id tag; do
+            if [ -d "packages/$id" ]; then echo "skip $id (already cloned)"; continue; fi
+            if [ -n "${CLONE_TOKEN:-}" ]; then
+              URL="https://x-access-token:${CLONE_TOKEN}@github.com/Herschy0829/$id.git"
+            else
+              URL="https://github.com/Herschy0829/$id.git"
+            fi
+            echo "clone $id @ $tag"
+            git clone --depth 1 --branch "$tag" "$URL" "packages/$id"
+          done
+          echo "modules present: $(ls -1 packages | wc -l)"
+
+      # 没配授权时优雅跳过，而不是让每次 push 都红一片
+      - name: Check Unity license secret
+        id: license
+        run: echo "have=${{ secrets.UNITY_LICENSE != '' }}" >> "$GITHUB_OUTPUT"
+
+      - name: Skip notice
+        if: steps.license.outputs.have != 'true'
+        run: echo "::notice::未配置 UNITY_LICENSE，跳过测试。启用步骤见 docs/ci.md"
+
+      - name: Cache Library
+        if: steps.license.outputs.have == 'true'
+        uses: actions/cache@v4
+        with:
+          path: dev/Library
+          key: Library-${{ runner.os }}-${{ hashFiles('dev/Packages/manifest.json', 'dev/ProjectSettings/ProjectVersion.txt') }}
+          restore-keys: Library-${{ runner.os }}-
+
+      - name: Run EditMode tests
+        if: steps.license.outputs.have == 'true'
+        uses: game-ci/unity-test-runner@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: dev
+          testMode: EditMode
+          artifactsPath: test-results
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: EditMode Test Results
+
+      - name: Upload results
+        if: always() && steps.license.outputs.have == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: EditMode-Test-Results
+          path: test-results
