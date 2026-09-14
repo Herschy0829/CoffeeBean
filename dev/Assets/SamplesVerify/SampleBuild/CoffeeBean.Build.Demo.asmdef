@@ -1,0 +1,20 @@
+{
+  "name": "CoffeeBean.Build.Demo",
+  "rootNamespace": "CoffeeBean.Build.Demo",
+  "references": [
+    "CoffeeBean.Tools",
+    "CoffeeBean.Build",
+    "CoffeeBean.Build.Editor"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

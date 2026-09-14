@@ -1,0 +1,18 @@
+{
+  "name": "CoffeeBean.AD.Demo",
+  "rootNamespace": "CoffeeBean.AD.Demo",
+  "references": [
+    "CoffeeBean.Tools",
+    "CoffeeBean.Telemetry",
+    "CoffeeBean.AD"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

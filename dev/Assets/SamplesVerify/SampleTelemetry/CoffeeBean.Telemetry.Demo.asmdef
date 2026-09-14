@@ -1,0 +1,17 @@
+{
+  "name": "CoffeeBean.Telemetry.Demo",
+  "rootNamespace": "CoffeeBean.Telemetry.Demo",
+  "references": [
+    "CoffeeBean.Tools",
+    "CoffeeBean.Telemetry"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

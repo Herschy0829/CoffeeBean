@@ -1,0 +1,16 @@
+{
+  "name": "CoffeeBean.DI.Demo",
+  "rootNamespace": "CoffeeBean.DI.Demo",
+  "references": [
+    "CoffeeBean.DI"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

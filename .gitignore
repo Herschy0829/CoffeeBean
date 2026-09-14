@@ -33,5 +33,19 @@ Thumbs.db
 # ===== CoffeeBean workspace =====
 # 各模块是独立的 git 仓库（各自推送各自的 GitHub 仓库），根仓库不追踪其内容
 /packages/
-# 本地联调 Unity 工程，不入库
-/dev/
+
+# dev/（联调 Unity 工程）**入库**：
+#   模块仓库本身只是"包"、不是 Unity 工程，测试必须在一个消费工程里跑 ——
+#   而 dev/ 正是那个工程（file: 引用 packages/ 下全部模块，manifest 的 testables 已登记所有包）。
+#   不入库的话 CI 无从跑测试（详见 docs/ci.md）。
+#   下面只排除生成物，避免把几百 MB 的 Library/TestResults 提交进来。
+/dev/[Ll]ibrary/
+/dev/[Tt]emp/
+/dev/[Oo]bj/
+/dev/[Bb]uild/
+/dev/[Bb]uilds/
+/dev/[Ll]ogs/
+/dev/[Uu]ser[Ss]ettings/
+/dev/[Mm]emoryCaptures/
+/dev/[Rr]ecordings/
+/dev/TestResults/

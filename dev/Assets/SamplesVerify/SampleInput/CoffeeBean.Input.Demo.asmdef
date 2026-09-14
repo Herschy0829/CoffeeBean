@@ -1,0 +1,17 @@
+{
+  "name": "CoffeeBean.Input.Demo",
+  "rootNamespace": "CoffeeBean.Input.Demo",
+  "references": [
+    "CoffeeBean.Tools",
+    "CoffeeBean.Input"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
