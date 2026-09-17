@@ -237,22 +237,43 @@ ModuleManager.Uninstall("com.coffeebean.events")
 | 分区 | 内容 |
 |------|------|
 | Installed | 已装模块：ID / 版本 / git URL / 依赖 / 状态 / 健康度 |
-| Available | 官方目录（来自 registry）：一键安装 / 升级到最新 tag |
+| Available | 官方目录（来自 registry）：一键安装 / 升级到最新 tag（**自动补装缺失依赖**） |
 | Graph | 依赖图视图、环/冲突/缺依赖警告 |
 | Log | 操作历史与错误 |
 
 ### 6.3 模块目录 RegistrySource
 ```json
-// com.coffeebean.core/Editor/Resources/coffeebean.registry.json（内置默认）
+// com.coffeebean.core/Editor/Resources/coffeebean.registry.json（内置默认，schema v2）
 {
-  "version": 1,
+  "version": 2,
   "modules": [
-    { "id": "com.coffeebean.events", "repo": "https://github.com/Herschy0829/com.coffeebean.events.git", "latest": "v1.0.0" }
+    {
+      "id": "com.coffeebean.save",
+      "repo": "https://github.com/Herschy0829/com.coffeebean.save.git",
+      "latest": "v0.3.0",
+      "dependencies": ["com.coffeebean.tools"],
+      "externalDependencies": [
+        { "id": "com.cysharp.memorypack",
+          "url": "https://github.com/Cysharp/MemoryPack.git?path=src/MemoryPack.Unity/Assets/MemoryPack.Unity#1.21.4" }
+      ]
+    }
   ]
 }
 ```
-- 内置默认保证离线可用；`ProjectSettings/CoffeeBean` 可配置远程 URL（raw.githubusercontent）覆盖
-- 非官方模块：Module Manager 提供"Add custom git URL"入口，照常纳入依赖检查
+- `dependencies`：同一 registry 内的 CoffeeBean 模块 id，可传递展开；
+- `externalDependencies`：registry 之外的第三方包，必须给**完整 UPM 引用**（`{id, url}`）。
+  官方 registry 能自行解析的依赖（`com.unity.addressables` / `com.unity.purchasing` 等）**不登记**，交给 UPM，
+  登记反而会绕过版本约束；
+- schema v2 之前的 JSON 仍可用（JsonUtility 忽略缺失字段）；
+- 内置默认保证离线可用；`EditorPrefs("CoffeeBean.RegistryUrl")` 可配置远程 URL（raw.githubusercontent）覆盖；
+- 非官方模块：Module Manager 提供"Add custom git URL"入口，照常纳入依赖检查。
+
+**为什么必须有 `dependencies`**：模块以 git 包分发、不在任何 registry 里，UPM 无法把模块
+`package.json` 里的 `"com.coffeebean.tools": "0.5.0"` 解析成地址。所以「一键安装 save」必须由框架
+先补装 tools 再装 save —— 见 `ModuleDependencyResolver` /
+`ModuleInstaller.InstallWithDependencies`：递归展开依赖闭包（传递、菱形去重、环检测），
+跳过已在工程中的，**目标模块无论是否已装都进计划**（首次安装与更新共用一条路径），
+串行 `Client.Add` 后统一 `AssetDatabase.Refresh()`；安装前的确认框会列出将自动补装哪些依赖。
 
 ### 6.4 引导流程（运行期）
 ```
