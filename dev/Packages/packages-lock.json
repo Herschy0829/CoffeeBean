@@ -135,12 +135,6 @@
       "source": "embedded",
       "dependencies": {}
     },
-    "com.neuecc.unirx": {
-      "version": "file:../../../IdleMedievalLife/IdleMedievallife/OtherAssets/SDK/CySharp/UniRx/Scripts",
-      "depth": 0,
-      "source": "local",
-      "dependencies": {}
-    },
     "com.unity.addressables": {
       "version": "2.9.1",
       "depth": 0,
