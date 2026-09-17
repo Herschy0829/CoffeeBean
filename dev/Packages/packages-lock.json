@@ -118,7 +118,9 @@
       "version": "file:../../packages/com.coffeebean.tools",
       "depth": 0,
       "source": "local",
-      "dependencies": {}
+      "dependencies": {
+        "com.unity.ugui": "2.0.0"
+      }
     },
     "com.coffeebean.ui": {
       "version": "file:../../packages/com.coffeebean.ui",
