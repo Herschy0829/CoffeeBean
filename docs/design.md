@@ -26,6 +26,20 @@
 
 > 编辑器侧的同类解耦：各模块在自己的 Editor 程序集里**复制一份同命名空间同名的
 > `CoffeeBeanToolAttribute`**，Hub 用反射按全名匹配 —— 这样模块编辑器工具无需编译期引用 Core。
+> 目前有 6 份副本：core（参考实现）、purchase、asset、build、excel、tools。
+
+**Hub 工具的两类形态**（`Window > CoffeeBean` 左侧导航里都能看到）：
+
+| 形态 | 模块侧写法 | Hub 行为 |
+|---|---|---|
+| 独立窗口工具 | 非抽象 `EditorWindow` 派生类 + `[CoffeeBeanTool]` | 点导航 → `GetWindow` 打开一个窗口 |
+| **内嵌面板** | `static class` + `[CoffeeBeanTool]` + `public static void DrawTool(Action requestRepaint)` | **直接画在 Hub 内容区里**（不另开窗口） |
+
+> 判定纯靠**结构**（static 类 + 方法签名），**没有给 attribute 加字段**：
+> attribute 在各模块里是各自维护的副本，加字段就得让每个模块跟着改一遍；
+> 按签名找则老模块一行都不用动，两类判据互斥、向后兼容。
+> `requestRepaint` 由宿主窗口传入 —— 面板是静态类拿不到窗口，异步操作结束后靠它刷新自己。
+> Hub 只是宿主：面板抛异常只在该区块报错 + 打 Console，不会牵连整个窗口。
 
 > 唯一仍硬依赖 Core 的模块是 `com.coffeebean.events`（首个验证模块，尚未迁移到 Bridge 模式）。
 
