@@ -36,7 +36,7 @@
     "com.coffeebean.telemetry": "file:../../packages/com.coffeebean.telemetry",
     "com.coffeebean.tools": "file:../../packages/com.coffeebean.tools",
     "com.coffeebean.ui": "file:../../packages/com.coffeebean.ui",
-    "com.cysharp.memorypack": "file:com.cysharp.memorypack",
+    "com.cysharp.memorypack": "https://github.com/Cysharp/MemoryPack.git?path=src/MemoryPack.Unity/Assets/MemoryPack.Unity#1.21.4",
     "com.unity.addressables": "2.9.1",
     "com.unity.collab-proxy": "2.4.3",
     "com.unity.ide.rider": "3.0.31",
