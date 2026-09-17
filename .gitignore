@@ -49,3 +49,8 @@ Thumbs.db
 /dev/[Mm]emoryCaptures/
 /dev/[Rr]ecordings/
 /dev/TestResults/
+
+# dev/ 里由测试/工具生成的产物：跑一次测试就会重新生成，入库只会让工作区反复变脏
+# （已确认干净 checkout 不含它们时仍能编译并通过全部 461 个 EditMode 测试）
+/dev/Assets/Configs/Generated/
+/dev/Assets/Resources/Configs/
