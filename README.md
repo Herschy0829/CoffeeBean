@@ -42,7 +42,7 @@ CoffeeBean/                      # 框架根仓库（本仓库）
 | `com.coffeebean.net` | 网络（HTTP / TCP / WebSocket，帧协议 + 可插拔编解码，依赖 tools） | `https://github.com/Herschy0829/com.coffeebean.net.git#v0.2.0` |
 | `com.coffeebean.pooling` | 对象池（CPool 纯 C# 泛型池 + CGameObjectPool Prefab 池，独立无依赖） | `https://github.com/Herschy0829/com.coffeebean.pooling.git#v0.2.0` |
 | `com.coffeebean.purchase` | 内购（Unity IAP 5.4，Excel 配置经 excel 模块，可选服务器核销） | `https://github.com/Herschy0829/com.coffeebean.purchase.git#v0.4.0` |
-| `com.coffeebean.save` | 存档（MemoryPack 序列化 + AES 加密，原子写 / 损坏回退 / 自动档节流 / 版本迁移，依赖 tools + memorypack） | `https://github.com/Herschy0829/com.coffeebean.save.git#v0.1.2` |
+| `com.coffeebean.save` | 存档（MemoryPack 序列化 + AES 加密，原子写 / 损坏回退 / 自动档节流 / 版本迁移，含 UniRx 格式化器，依赖 tools + memorypack） | `https://github.com/Herschy0829/com.coffeebean.save.git#v0.2.0` |
 | `com.coffeebean.telemetry` | 打点（统一事件上报：热插拔后端 + SDK 未就绪事件缓存，依赖 tools） | `https://github.com/Herschy0829/com.coffeebean.telemetry.git#v0.1.1` |
 | `com.coffeebean.tools` | 工具模块（单例 / 主线程调度 / 线程池 / 构建模式门面 CGameBuild，CLog 按 Beta/Release 剥离，独立无依赖） | `https://github.com/Herschy0829/com.coffeebean.tools.git#v0.6.0` |
 | `com.coffeebean.ui` | UI（UGUI 面板管理：CUIManager/CUIPanel/6 层级/栈导航/遮罩/统计/可插拔加载器 + 面板转场动画 + CBind 代码生成，依赖 tools + asset） | `https://github.com/Herschy0829/com.coffeebean.ui.git#v0.2.4` |
