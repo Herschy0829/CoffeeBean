@@ -265,7 +265,15 @@ ModuleManager.Uninstall("com.coffeebean.events")
   官方 registry 能自行解析的依赖（`com.unity.addressables` / `com.unity.purchasing` 等）**不登记**，交给 UPM，
   登记反而会绕过版本约束；
 - schema v2 之前的 JSON 仍可用（JsonUtility 忽略缺失字段）；
-- 内置默认保证离线可用；`EditorPrefs("CoffeeBean.RegistryUrl")` 可配置远程 URL（raw.githubusercontent）覆盖；
+- **Core 自己也登记在目录里**（`com.coffeebean.core`，无依赖）：它与其他模块的区别只有两条 ——
+  不出现在"可安装"（从未装过 Core 的工程不存在，窗口就住在 Core 内），且**永远不给卸载入口**。
+  登记它的唯一目的是让它**能被更新**：否则"想看到 Core 的更新得先更新 Core"是个死锁。
+- 目录来源（v0.1.58 起）：
+  - **默认远程**：`RegistrySource.DefaultRemoteUrl`（官方 main 分支上的这份 json），开窗/刷新时异步拉取并覆盖内置；
+  - 内置 Resources 里的那一份保证离线可用，但**它的新鲜度 == 用户装的 Core 版本**，
+    所以只按内置目录判断"有没有更新"必然漏报 —— 这正是 `检查更新` 曾经谎报"已是最新"的根因；
+  - `EditorPrefs("CoffeeBean.RegistryUrl")` 可覆盖默认地址（内网镜像 / 锁定分支），留空即回落到官方默认。
+    工具栏常驻显示当前用的是哪一份，远程拉取失败会明说并给「重试拉取」。
 - 非官方模块：Module Manager 提供"Add custom git URL"入口，照常纳入依赖检查。
 
 **为什么必须有 `dependencies`**：模块以 git 包分发、不在任何 registry 里，UPM 无法把模块
