@@ -26,7 +26,8 @@
 |----|------|
 | 包名 | `com.coffeebean.save`（程序集 `CoffeeBean.Save`，命名空间 `CoffeeBean`——统一根命名空间） |
 | 依赖 | **`com.coffeebean.tools`**（CJson 兜底序列化 / CLog 日志）+ **`com.cysharp.memorypack`**（MemoryPack，默认序列化后端） |
-| MemoryPack 集成方式 | **声明包名依赖（版本范围），来源由消费工程决定**——项目已本地化（file: 引用 SDK 副本），不内嵌源码/DLL（MemoryPack 需 Roslyn 源码生成器，内嵌复杂且版本锁定）；消费工程可用 git 或 file: 提供 |
+| MemoryPack 集成方式 | **声明包名依赖（版本范围），来源由消费工程决定**——本模块不内嵌源码/DLL（MemoryPack 需 Roslyn 源码生成器，内嵌会锁定版本且拿不到正确的 analyzer 装配）。**注意（v0.1.2 实测修正）**：上游 `MemoryPack.Unity` 的 git 包**只含胶水层**（`Runtime/` 3 个文件 + `package.json`），**不含** `MemoryPack.Core.dll` 与 `MemoryPack.Generator.dll`，而它的 asmdef 要求 `precompiledReferences: ["MemoryPack.Core.dll"]`。因此消费工程**必须另外提供 NuGet 产物**：用 NuGetForUnity 还原，或手动把 Core/Generator（+ `System.Collections.Immutable`/`System.Runtime.CompilerServices.Unsafe`）放进 `Assets/Packages/` 且生成器 `.meta` 带 `RoslynAnalyzer` 标签。只做 git 引用会产生 87 条 `CS0234/CS0246`。详见模块 README「安装」 |
+| MemoryPack git URL | `https://github.com/Cysharp/MemoryPack.git?path=src/MemoryPack.Unity/Assets/MemoryPack.Unity#1.21.4`（注意是 `MemoryPack.Unity/Assets/MemoryPack.Unity`，**不是** `src/MemoryPack`） |
 | Core 集成 | 可选（Bridge 注册 `CSaveSystem`） |
 
 ## 3. 核心能力
@@ -109,7 +110,7 @@ Samples~/
 |------|------|
 | 存档格式 | **MemoryPack 二进制**（默认，对齐项目现状；高效 + VersionTolerant 版本容错） |
 | 序列化后端 | `ISaveSerializer` 可插拔：`CMemoryPackSerializer`（默认）+ `CJsonSerializer`（兜底，tools CJson） |
-| MemoryPack 集成 | **声明包名依赖，来源消费工程定**（项目已 file: 本地化；不内嵌源码/生成器） |
+| MemoryPack 集成 | **声明包名依赖，来源消费工程定**（本模块不内嵌源码/生成器）。**消费工程必须同时提供 NuGet 产物**：git 只给胶水层，缺 `MemoryPack.Core.dll` + `MemoryPack.Generator.dll` 会直接编译失败（实测 87 条 CS0234/CS0246）；供给方式见模块 README「安装」 |
 | 加密 | **AES + 随机 IV + 可选 XOR**（默认开启；主存档当前未加密 → 补齐） |
 | 存储 | `persistentDataPath` 文件槽位 + **原子写** + **损坏自动回退备份** |
 | 写盘 | 后台线程异步 + **串行队列防竞态**（修复 BinarySerializ 静态字段互踩） |
