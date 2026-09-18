@@ -54,3 +54,11 @@ Thumbs.db
 # （已确认干净 checkout 不含它们时仍能编译并通过全部 461 个 EditMode 测试）
 /dev/Assets/Configs/Generated/
 /dev/Assets/Resources/Configs/
+
+# ===== Agent 本机私有（不入库）=====
+# 记忆库与本地 overlay 只对本机有意义（含本机绝对路径、DSH 配置、插件调研），
+# 且本仓库是 public —— 开发内务不该进框架产品的公开历史。
+# AGENTS.md（铁律）入库；AGENTS.local.md（环境速查）留本地。
+/.dsh/
+/AGENTS.local.md
+/CLAUDE.local.md
