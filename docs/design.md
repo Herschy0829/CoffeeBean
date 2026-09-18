@@ -279,6 +279,14 @@ ModuleManager.Uninstall("com.coffeebean.events")
   官方 registry 能自行解析的依赖（`com.unity.addressables` / `com.unity.purchasing` 等）**不登记**，交给 UPM，
   登记反而会绕过版本约束；
 - schema v2 之前的 JSON 仍可用（JsonUtility 忽略缺失字段）；
+- **第三方硬依赖（v0.1.61 起）**：模块可以在自己的 `package.json` 里声明 registry 之外的包
+  （`tools` 强制 UniRx + UniTask；`asset` 声明 UniTask）。这类声明 UPM **解析不到**，
+  所以**必须同时在 registry 的 `externalDependencies` 里登记完整地址** ——
+  否则"在新工程里一键安装"会直接失败。安装器会把它们排在同一批请求的最前面
+  （第三方 → CoffeeBean 依赖 → 目标模块），一次 `Client.AddAndRemove`、UPM 解一次依赖图即可全部满足。
+  两条测试锁住：`Resolve_Tools_PlansThirdPartyBeforeTools`（顺序）、
+  `BuiltInRegistry_ThirdPartyUrlsMatchTheToolsCatalog`（registry 与 tools 的 `CThirdPartyCatalog`
+  地址必须逐字一致，否则同一个包可能被装成两个来源）；
 - **Core 自己也登记在目录里**（`com.coffeebean.core`，无依赖）：它与其他模块的区别只有两条 ——
   不出现在"可安装"（从未装过 Core 的工程不存在，窗口就住在 Core 内），且**永远不给卸载入口**。
   登记它的唯一目的是让它**能被更新**：否则"想看到 Core 的更新得先更新 Core"是个死锁。

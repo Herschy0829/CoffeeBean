@@ -15,7 +15,8 @@
       "source": "local",
       "dependencies": {
         "com.coffeebean.tools": "0.5.0",
-        "com.unity.addressables": "2.9.1"
+        "com.unity.addressables": "2.9.1",
+        "com.cysharp.unitask": "2.5.11"
       }
     },
     "com.coffeebean.build": {
@@ -119,7 +120,9 @@
       "depth": 0,
       "source": "local",
       "dependencies": {
-        "com.unity.ugui": "2.0.0"
+        "com.unity.ugui": "2.0.0",
+        "com.cysharp.unitask": "2.5.11",
+        "com.neuecc.unirx": "7.1.0"
       }
     },
     "com.coffeebean.ui": {
@@ -128,7 +131,8 @@
       "source": "local",
       "dependencies": {
         "com.coffeebean.tools": "0.5.0",
-        "com.coffeebean.asset": "0.1.0"
+        "com.coffeebean.asset": "0.1.0",
+        "com.cysharp.unitask": "2.5.11"
       }
     },
     "com.cysharp.memorypack": {
@@ -137,6 +141,20 @@
       "source": "git",
       "dependencies": {},
       "hash": "0f2fe0827907940768293b7bb81b9605a7d8cba8"
+    },
+    "com.cysharp.unitask": {
+      "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.11",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "2e993ff18f28c931602a07292df0b0804eebef99"
+    },
+    "com.neuecc.unirx": {
+      "version": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts#c244f9a89d05cda62acd0e4572510c2d6843164c",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "c244f9a89d05cda62acd0e4572510c2d6843164c"
     },
     "com.unity.addressables": {
       "version": "2.9.1",

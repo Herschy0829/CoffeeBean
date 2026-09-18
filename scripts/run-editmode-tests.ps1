@@ -85,13 +85,31 @@ if (-not (Test-Path $xml)) {
     exit 1
 }
 
-[xml]$doc = Get-Content $xml -Raw
+# Read the results file with an EXPLICIT UTF-8 decoder.
+# Unity's NUnit result XML has no BOM, and Windows PowerShell 5.1 decodes BOM-less
+# files as ANSI -- so Get-Content turns the Chinese text inside <message>/<output>
+# CDATA into garbage and can even break the XML structure itself. That failure mode
+# looks like a test-runner error ("start tag 'message' does not match end tag 'output'")
+# while every test actually passed, so never go back to Get-Content here.
+[xml]$doc = [System.IO.File]::ReadAllText($xml, [System.Text.Encoding]::UTF8)
 $run = $doc.'test-run'
 Write-Host ''
 Write-Host ("TOTAL={0} PASSED={1} FAILED={2} SKIPPED={3} RESULT={4}" -f `
     $run.total, $run.passed, $run.failed, $run.skipped, $run.result)
 
-$failed = $doc.SelectNodes('//test-case') | Where-Object { $_.result -ne 'Passed' }
+# Only Failed/Error may fail the run.
+# Skipped (Assert.Ignore) is an intentional outcome -- e.g. a test whose precondition
+# only holds in a project that has NOT installed a given optional package. Treating it
+# as a failure (the old `-ne 'Passed'` filter) made every run red once any skip existed,
+# which trains people to ignore the exit code.
+$failed = $doc.SelectNodes('//test-case') | Where-Object { $_.result -eq 'Failed' -or $_.result -eq 'Error' }
+$skipped = $doc.SelectNodes('//test-case') | Where-Object { $_.result -eq 'Skipped' }
+
+if ($skipped) {
+    Write-Host ''
+    $skipped | ForEach-Object { Write-Host ("SKIPPED: " + $_.fullname) -ForegroundColor Yellow }
+}
+
 if ($failed) {
     Write-Host ''
     $failed | ForEach-Object { Write-Host ("FAILED: " + $_.fullname) -ForegroundColor Red }

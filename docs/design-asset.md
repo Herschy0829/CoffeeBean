@@ -71,16 +71,16 @@ public sealed class CAssetSystem
     // 同步加载（Editor 下直读，真机 WaitForCompletion；缓存命中零开销）
     T LoadAsset<T>(string address) where T : Object;
 
-    // 异步加载（地址存在性检查 + 加载 + 缓存 + 引用计数；C# Task，对齐 net 模块约定，不引入 UniTask）
-    Task<T> LoadAssetAsync<T>(string address) where T : Object;
+    // 异步加载（地址存在性检查 + 加载 + 缓存 + 引用计数；UniTask，见下方说明）
+    UniTask<T> LoadAssetAsync<T>(string address) where T : Object;
 
     // 批量/标签
-    Task<List<T>> LoadAssetsByLabelAsync<T>(string label);
-    Task PreloadAsync(IEnumerable<string> addresses);
+    UniTask<List<T>> LoadAssetsByLabelAsync<T>(string label);
+    UniTask PreloadAsync(IEnumerable<string> addresses);
 
     // 实例化
     GameObject Instantiate(string address, Transform parent = null);
-    Task<GameObject> InstantiateAsync(string address, Transform parent = null);
+    UniTask<GameObject> InstantiateAsync(string address, Transform parent = null);
 
     // 释放（引用计数）
     void Release(string address);          // 计数-1，归零释放
@@ -96,7 +96,21 @@ public sealed class CAssetSystem
 }
 ```
 
-> 异步统一用 `System.Threading.Tasks.Task`（`AsyncOperationHandle.Task` 直接转换），与 net 模块一致、无 UniTask 依赖；内部 `ConfigureAwait(false)` 按 net 模块约定处理（后台线程段）。
+> **异步统一用 `UniTask`**（v0.4.0 起的决定，**推翻了本节早期"C# Task、不引入 UniTask"的写法**）。
+>
+> 当时选 `Task` 的理由是"与 net 模块一致、零额外依赖"，但代价比想象的大：
+> `AsyncOperationHandle.Task` 每个句柄都会 new 一个
+> `TaskCompletionSource<T>(RunContinuationsAsynchronously)`（实测 ~104 B）并经调度器排队；
+> 更要命的是续体**不保证回到 Unity 主线程** —— 早期实现里的 `ConfigureAwait(false)`
+> 会把续体丢到线程池，而 `InstantiateAsync` 紧接着调用 `Object.Instantiate`，
+> 那是一次潜在的主线程违规（mock 后端同步完成，所以测试没暴露）。
+>
+> 现在句柄一律走 `handle.ToUniTask()`：等待源池化（预热后基本 0 分配）、按 PlayerLoop
+> **在主线程恢复**、顺带拿到取消能力。碰 Unity API 前显式 `UniTask.SwitchToMainThread()`
+> （已在主线程时立即完成，不吃帧）。**调用方写法不变**（`await` 照旧）。
+>
+> 代价：`com.cysharp.unitask` 成为 asset 的硬依赖；而 tools 已把 UniRx / UniTask 声明为
+> **框架级强制依赖**，所以整个框架统一了这套地基，不存在"某个模块被单独拖进 UniTask"的情况。
 
 内部三字典对齐 `AddressableResourceManager` 经验：`_cache`(address→Object) + `_handles`(address→AsyncOperationHandle) + `_refCounts`(address→int)；**去重**：缓存命中时引用计数 +1 且不重复持有 handle；释放归零时 `Addressables.Release(handle)` 并清三字典。
 
