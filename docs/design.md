@@ -285,8 +285,9 @@ ModuleManager.Uninstall("com.coffeebean.events")
   否则"在新工程里一键安装"会直接失败。安装器会把它们排在同一批请求的最前面
   （第三方 → CoffeeBean 依赖 → 目标模块），一次 `Client.AddAndRemove`、UPM 解一次依赖图即可全部满足。
   两条测试锁住：`Resolve_Tools_PlansThirdPartyBeforeTools`（顺序）、
-  `BuiltInRegistry_ThirdPartyUrlsMatchTheToolsCatalog`（registry 与 tools 的 `CThirdPartyCatalog`
-  地址必须逐字一致，否则同一个包可能被装成两个来源）；
+  `BuiltInRegistry_ThirdPartyUrlsArePinnedAndConsistent`（地址必须锁定修订且在 registry 内处处一致，
+  否则同一个包可能被装成两个来源）。tools v0.13.0 起不再提供"第三方依赖一键集成"菜单 ——
+  第三方依赖只剩 registry 这一个来源，所以这条测试从"与 tools 的目录比对"改成直接钉死期望地址；
 - **Core 自己也登记在目录里**（`com.coffeebean.core`，无依赖）：它与其他模块的区别只有两条 ——
   不出现在"可安装"（从未装过 Core 的工程不存在，窗口就住在 Core 内），且**永远不给卸载入口**。
   登记它的唯一目的是让它**能被更新**：否则"想看到 Core 的更新得先更新 Core"是个死锁。
