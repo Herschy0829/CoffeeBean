@@ -16,6 +16,7 @@
     "com.coffeebean.debug",
     "com.coffeebean.di",
     "com.coffeebean.input",
+    "com.coffeebean.login",
     "com.coffeebean.build"
   ],
   "dependencies": {
@@ -29,6 +30,7 @@
     "com.coffeebean.excel": "file:../../packages/com.coffeebean.excel",
     "com.coffeebean.fsm": "file:../../packages/com.coffeebean.fsm",
     "com.coffeebean.input": "file:../../packages/com.coffeebean.input",
+    "com.coffeebean.login": "file:../../packages/com.coffeebean.login",
     "com.coffeebean.net": "file:../../packages/com.coffeebean.net",
     "com.coffeebean.pooling": "file:../../packages/com.coffeebean.pooling",
     "com.coffeebean.purchase": "file:../../packages/com.coffeebean.purchase",

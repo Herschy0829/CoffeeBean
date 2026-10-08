@@ -77,6 +77,14 @@
         "com.coffeebean.tools": "0.5.0"
       }
     },
+    "com.coffeebean.login": {
+      "version": "file:../../packages/com.coffeebean.login",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "com.coffeebean.tools": "0.13.0"
+      }
+    },
     "com.coffeebean.net": {
       "version": "file:../../packages/com.coffeebean.net",
       "depth": 0,
